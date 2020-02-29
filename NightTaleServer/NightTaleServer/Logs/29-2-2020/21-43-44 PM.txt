@@ -1,0 +1,31 @@
+[Trace]   DarkRiftServer        System Details:
+                                	OS: Microsoft Windows NT 10.0.18363.0
+                                	CLS Version: 4.0.30319.42000
+                                	DarkRift: 2.5.0.0 - Free
+[Trace]   PluginFactory         Created plugin 'CompatibilityBichannelListener'.
+[Trace]   DefaultNetworkListener Starting compatibility listener.
+[Info]    DefaultNetworkListener Server mounted, listening on port 4296.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:49102.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:60529.
+[Info]    ClientManager         New client [0] connected [127.0.0.1:49102|127.0.0.1:60529].
+[Error]   Client                An plugin encountered an error whilst handling the MessageReceived event.
+                                 System.IO.EndOfStreamException: Elements exceeded bounds
+                                   at DarkRift.DarkRiftReader.ReadString (System.Text.Encoding encoding) [0x00059] in <94520e70833746268fdea715bb52c7dc>:0 
+                                   at DarkRift.DarkRiftReader.ReadString () [0x00008] in <94520e70833746268fdea715bb52c7dc>:0 
+                                   at MasterServerManager.Authorize (System.Object sender, DarkRift.Server.MessageReceivedEventArgs e) [0x0002a] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\MasterServer\MasterServerManager.cs:131 
+                                   at MasterServerManager.OnMessageReceived (System.Object sender, DarkRift.Server.MessageReceivedEventArgs e) [0x00027] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\MasterServer\MasterServerManager.cs:103 
+                                   at (wrapper delegate-invoke) System.EventHandler`1[DarkRift.Server.MessageReceivedEventArgs].invoke_void_object_TEventArgs(object,DarkRift.Server.MessageReceivedEventArgs)
+                                   at DarkRift.Server.Client+<>c__DisplayClass43_0.<HandleIncomingMessage>b__0 () [0x00011] in <62ef1c031a10437d9cba70b183da538b>:0 
+[Error]   Client                An plugin encountered an error whilst handling the MessageReceived event.
+                                 System.Security.Cryptography.CryptographicUnexpectedOperationException: Error occurred while decoding PKCS1 padding.
+                                   at System.Security.Cryptography.RSAPKCS1KeyExchangeDeformatter.DecryptKeyExchange (System.Byte[] rgbIn) [0x00064] in <437ba245d8404784b9fbab9b439ac908>:0 
+                                   at System.Security.Cryptography.RSACryptoServiceProvider.Decrypt (System.Byte[] rgb, System.Boolean fOAEP) [0x00073] in <437ba245d8404784b9fbab9b439ac908>:0 
+                                   at MasterServer.DarkRift.Shared.Cryptography.DecryptRSA (System.Byte[] message, System.Security.Cryptography.RSAParameters privateKey) [0x00014] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\MasterServer\Shared\Cryptography.cs:129 
+                                   at MasterServer.DarkRift.Shared.Cryptography.DecryptReaderRSA (DarkRift.DarkRiftReader reader, System.Security.Cryptography.RSAParameters privateKey) [0x00056] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\MasterServer\Shared\Cryptography.cs:95 
+                                   at MasterServerManager.Authorize (System.Object sender, DarkRift.Server.MessageReceivedEventArgs e) [0x00011] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\MasterServer\MasterServerManager.cs:129 
+                                   at MasterServerManager.OnMessageReceived (System.Object sender, DarkRift.Server.MessageReceivedEventArgs e) [0x00027] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\MasterServer\MasterServerManager.cs:103 
+                                   at (wrapper delegate-invoke) System.EventHandler`1[DarkRift.Server.MessageReceivedEventArgs].invoke_void_object_TEventArgs(object,DarkRift.Server.MessageReceivedEventArgs)
+                                   at DarkRift.Server.Client+<>c__DisplayClass43_0.<HandleIncomingMessage>b__0 () [0x00011] in <62ef1c031a10437d9cba70b183da538b>:0 
+[Info]    ClientManager         Client [0] disconnected: ConnectionReset.
+                                 System.Net.Sockets.SocketException (0x80004005): An existing connection was forcibly closed by the remote host.
+                                 

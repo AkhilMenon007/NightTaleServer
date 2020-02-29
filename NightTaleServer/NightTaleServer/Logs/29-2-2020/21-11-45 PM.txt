@@ -1,0 +1,54 @@
+[Trace]   DarkRiftServer        System Details:
+                                	OS: Microsoft Windows NT 10.0.18363.0
+                                	CLS Version: 4.0.30319.42000
+                                	DarkRift: 2.5.0.0 - Free
+[Trace]   PluginFactory         Created plugin 'CompatibilityBichannelListener'.
+[Trace]   DefaultNetworkListener Starting compatibility listener.
+[Info]    DefaultNetworkListener Server mounted, listening on port 4296.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:48362.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:50627.
+[Info]    ClientManager         New client [0] connected [127.0.0.1:48362|127.0.0.1:50627].
+[Info]    ClientManager         Client [0] disconnected: ConnectionReset.
+                                 System.Net.Sockets.SocketException (0x80004005): An existing connection was forcibly closed by the remote host.
+                                 
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:48498.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:52376.
+[Info]    ClientManager         New client [1] connected [127.0.0.1:48498|127.0.0.1:52376].
+[Error]   Client                An plugin encountered an error whilst handling the MessageReceived event.
+                                 System.IO.EndOfStreamException: Elements exceeded bounds
+                                   at DarkRift.DarkRiftReader.ReadString (System.Text.Encoding encoding) [0x00059] in <94520e70833746268fdea715bb52c7dc>:0 
+                                   at DarkRift.DarkRiftReader.ReadString () [0x00008] in <94520e70833746268fdea715bb52c7dc>:0 
+                                   at MasterServer.DarkRift.Shared.ServerCharData.Deserialize (DarkRift.DeserializeEvent e) [0x00001] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\MasterServer\Shared\Models\ServerCharData.cs:15 
+                                   at DarkRift.DarkRiftReader.ReadSerializableInto[T] (T& t) [0x00008] in <94520e70833746268fdea715bb52c7dc>:0 
+                                   at DarkRift.DarkRiftReader.ReadSerializable[T] () [0x00007] in <94520e70833746268fdea715bb52c7dc>:0 
+                                   at PlayerSessionManager.OnMasterServerLoginMessage (System.Object sender, DarkRift.Server.MessageReceivedEventArgs e) [0x00032] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Scripts\PlayerSessionManager.cs:204 
+                                   at DarkRift.Server.Client+<>c__DisplayClass43_0.<HandleIncomingMessage>b__0 () [0x00011] in <62ef1c031a10437d9cba70b183da538b>:0 
+[Warning] ObjectCacheMonitor    1 AutoRecyclingArray objects were finalized last period. This is usually a sign that you are not recycling objects correctly.
+[Error]   Client                An plugin encountered an error whilst handling the MessageReceived event.
+                                 System.IO.EndOfStreamException: Elements exceeded bounds
+                                   at DarkRift.DarkRiftReader.ReadString (System.Text.Encoding encoding) [0x00059] in <94520e70833746268fdea715bb52c7dc>:0 
+                                   at DarkRift.DarkRiftReader.ReadString () [0x00008] in <94520e70833746268fdea715bb52c7dc>:0 
+                                   at MasterServer.DarkRift.Shared.ServerCharData.Deserialize (DarkRift.DeserializeEvent e) [0x00001] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\MasterServer\Shared\Models\ServerCharData.cs:15 
+                                   at DarkRift.DarkRiftReader.ReadSerializableInto[T] (T& t) [0x00008] in <94520e70833746268fdea715bb52c7dc>:0 
+                                   at DarkRift.DarkRiftReader.ReadSerializable[T] () [0x00007] in <94520e70833746268fdea715bb52c7dc>:0 
+                                   at PlayerSessionManager.OnMasterServerLoginMessage (System.Object sender, DarkRift.Server.MessageReceivedEventArgs e) [0x00032] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Scripts\PlayerSessionManager.cs:204 
+                                   at DarkRift.Server.Client+<>c__DisplayClass43_0.<HandleIncomingMessage>b__0 () [0x00011] in <62ef1c031a10437d9cba70b183da538b>:0 
+[Info]    ClientManager         Client [1] disconnected: ConnectionReset.
+                                 System.Net.Sockets.SocketException (0x80004005): An existing connection was forcibly closed by the remote host.
+                                 
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:48644.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:58424.
+[Info]    ClientManager         New client [2] connected [127.0.0.1:48644|127.0.0.1:58424].
+[Error]   Client                An plugin encountered an error whilst handling the MessageReceived event.
+                                 System.IO.EndOfStreamException: Elements exceeded bounds
+                                   at DarkRift.DarkRiftReader.ReadString (System.Text.Encoding encoding) [0x00059] in <94520e70833746268fdea715bb52c7dc>:0 
+                                   at DarkRift.DarkRiftReader.ReadString () [0x00008] in <94520e70833746268fdea715bb52c7dc>:0 
+                                   at MasterServer.DarkRift.Shared.ServerCharData.Deserialize (DarkRift.DeserializeEvent e) [0x00001] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\MasterServer\Shared\Models\ServerCharData.cs:15 
+                                   at DarkRift.DarkRiftReader.ReadSerializableInto[T] (T& t) [0x00008] in <94520e70833746268fdea715bb52c7dc>:0 
+                                   at DarkRift.DarkRiftReader.ReadSerializable[T] () [0x00007] in <94520e70833746268fdea715bb52c7dc>:0 
+                                   at PlayerSessionManager.OnMasterServerLoginMessage (System.Object sender, DarkRift.Server.MessageReceivedEventArgs e) [0x00032] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Scripts\PlayerSessionManager.cs:204 
+                                   at DarkRift.Server.Client+<>c__DisplayClass43_0.<HandleIncomingMessage>b__0 () [0x00011] in <62ef1c031a10437d9cba70b183da538b>:0 
+[Warning] ObjectCacheMonitor    1 AutoRecyclingArray objects were finalized last period. This is usually a sign that you are not recycling objects correctly.
+[Info]    ClientManager         Client [2] disconnected: ConnectionReset.
+                                 System.Net.Sockets.SocketException (0x80004005): An existing connection was forcibly closed by the remote host.
+                                 

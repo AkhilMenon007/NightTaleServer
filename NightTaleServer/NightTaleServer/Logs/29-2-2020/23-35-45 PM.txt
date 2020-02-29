@@ -1,0 +1,30 @@
+[Trace]   DarkRiftServer        System Details:
+                                	OS: Microsoft Windows NT 10.0.18363.0
+                                	CLS Version: 4.0.30319.42000
+                                	DarkRift: 2.5.0.0 - Free
+[Trace]   PluginFactory         Created plugin 'CompatibilityBichannelListener'.
+[Trace]   DefaultNetworkListener Starting compatibility listener.
+[Info]    DefaultNetworkListener Server mounted, listening on port 4296.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:52190.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:64022.
+[Info]    ClientManager         New client [0] connected [127.0.0.1:52190|127.0.0.1:64022].
+[Error]   Client                An plugin encountered an error whilst handling the MessageReceived event.
+                                 System.ArgumentOutOfRangeException: Non-negative number required.
+                                 Parameter name: count
+                                   at System.Text.UnicodeEncoding.GetString (System.Byte[] bytes, System.Int32 index, System.Int32 count) [0x0003a] in <437ba245d8404784b9fbab9b439ac908>:0 
+                                   at DarkRift.DarkRiftReader.ReadString (System.Text.Encoding encoding) [0x00081] in <94520e70833746268fdea715bb52c7dc>:0 
+                                   at DarkRift.DarkRiftReader.ReadString () [0x00008] in <94520e70833746268fdea715bb52c7dc>:0 
+                                   at MasterServerManager.Authorize (System.Object sender, DarkRift.Server.MessageReceivedEventArgs e) [0x0002a] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\MasterServer\MasterServerManager.cs:131 
+                                   at MasterServerManager.OnMessageReceived (System.Object sender, DarkRift.Server.MessageReceivedEventArgs e) [0x00027] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\MasterServer\MasterServerManager.cs:103 
+                                   at (wrapper delegate-invoke) System.EventHandler`1[DarkRift.Server.MessageReceivedEventArgs].invoke_void_object_TEventArgs(object,DarkRift.Server.MessageReceivedEventArgs)
+                                   at DarkRift.Server.Client+<>c__DisplayClass43_0.<HandleIncomingMessage>b__0 () [0x00011] in <62ef1c031a10437d9cba70b183da538b>:0 
+[Info]    ClientManager         Client [0] disconnected: ConnectionReset.
+                                 System.Net.Sockets.SocketException (0x80004005): An existing connection was forcibly closed by the remote host.
+                                 
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:52302.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:59034.
+[Info]    ClientManager         New client [1] connected [127.0.0.1:52302|127.0.0.1:59034].
+[Info]    ClientManager         Client [1] disconnected: ConnectionReset.
+                                 System.Net.Sockets.SocketException (0x80004005): An existing connection was forcibly closed by the remote host.
+                                 
+[Warning] ObjectCacheMonitor    1 AutoRecyclingArray objects were finalized last period. This is usually a sign that you are not recycling objects correctly.
