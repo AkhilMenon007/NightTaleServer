@@ -5,6 +5,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class MasterServerManager : MonoBehaviour
@@ -12,15 +14,18 @@ public class MasterServerManager : MonoBehaviour
     public static MasterServerManager instance = null;
     public IClient masterServer { get; private set; } = null;
 
-    private Dictionary<IClient, RSAParameters> masterClientKeys = new Dictionary<IClient, RSAParameters>();
+    private Dictionary<IClient, byte[]> masterClientKeys = new Dictionary<IClient, byte[]>();
 
 
-    private string passCode = "YAREYAREDAZE!";
+    private string passCode = "Tpu3pHh5/dXrZZaghUwcz7kxEiVO1yuNHrDC7bu2J4A=";
     public Action OnMasterDisconnected { get; set; }
     public Action OnMasterConnected { get; set; }
 
     private IClientManager clientManager => ServerManager.Instance.Server.ClientManager;
 
+    private byte[] passCodeBytes;
+
+    private string commonMessage;
 
     private void Awake()
     {
@@ -33,6 +38,12 @@ public class MasterServerManager : MonoBehaviour
             Destroy(this);
             return;
         }
+        passCodeBytes = Convert.FromBase64String(passCode);
+        var random = new System.Random(DateTime.Now.Millisecond);
+        var bytes = new byte[32];
+        random.NextBytes(bytes);
+        commonMessage = Convert.ToBase64String(bytes);
+        Debug.Log(commonMessage);
     }
 
 
@@ -73,6 +84,8 @@ public class MasterServerManager : MonoBehaviour
     {
         masterServer = masterServerClient;
         clientManager.ClientConnected -= OnClientConnected;
+
+        Debug.Log($"Identified Client {masterServerClient.ID} as master client");
         foreach (var client in masterClientKeys.Keys)
         {
             client.MessageReceived -= OnMessageReceived;
@@ -92,55 +105,59 @@ public class MasterServerManager : MonoBehaviour
         client.Disconnect();
     }
 
-    private void OnMessageReceived(object sender, MessageReceivedEventArgs e)
+    private async void OnMessageReceived(object sender, MessageReceivedEventArgs e)
     {
         switch ((MasterServerNoReplyTags)e.Tag) 
         {
             case MasterServerNoReplyTags.AuthRequest:
-                SendPublicKey(sender, e);
+                await SendPublicKey(sender, e);
                 break;
             case MasterServerNoReplyTags.Password:
-                Authorize(sender, e);
+                await Authorize(sender, e);
                 break;
         }
     }
 
-    private void SendPublicKey(object sender, MessageReceivedEventArgs e)
+    private Task SendPublicKey(object sender, MessageReceivedEventArgs e)
     {
-        Cryptography.GenerateRSAKeys(out var privateKey, out var publicKey);
-        masterClientKeys[e.Client] = privateKey;
+        var key = Cryptography.GenerateAESKey();
+        masterClientKeys[e.Client] = key;
 
         using(var writer = DarkRiftWriter.Create()) 
         {
-            writer.Write(Cryptography.RsaKeyToString(publicKey));
-            using(var message = Message.Create((ushort)MasterServerNoReplyTags.PublicKey, writer)) 
+            writer.Write(Convert.ToBase64String(key));
+            writer.Write(commonMessage);
+            using (var encryptedWriter = writer.EncryptWriterAES(passCodeBytes))
             {
-                e.Client.SendMessage(message, SendMode.Reliable);
-            }
-        }
-    }
-
-    private void Authorize(object sender, MessageReceivedEventArgs e)
-    {
-        using(var message = e.GetMessage()) 
-        {
-            using(var reader = message.GetReader()) 
-            {
-                using(var decryptedMsg = reader.DecryptReaderRSA(masterClientKeys[e.Client])) 
+                using (var message = Message.Create((ushort)MasterServerNoReplyTags.PublicKey, encryptedWriter))
                 {
-                    var passCode = decryptedMsg.ReadString();
-                    Debug.Log(passCode);
-                    if(passCode == this.passCode) 
-                    {
-                        OnMasterServerIdentified(e.Client);
-                    }
-                    else 
-                    {
-                        OnMasterServerIdentificationFail(e.Client);
-                    }
+                    e.Client.SendMessage(message, SendMode.Reliable);
                 }
             }
         }
+        return Task.CompletedTask;
+    }
+
+    private Task Authorize(object sender, MessageReceivedEventArgs e)
+    {
+        using(var message = e.GetMessage()) 
+        {
+            using(var decryptedMsg = message.GetReader().DecryptReaderAES(masterClientKeys[e.Client])) 
+            {
+                var passCode = decryptedMsg.ReadString();
+                if(string.Equals(passCode,commonMessage,StringComparison.Ordinal)) 
+                {
+                    OnMasterServerIdentified(e.Client);
+                    Debug.Log("Master identified..");
+                }
+                else 
+                {
+                    OnMasterServerIdentificationFail(e.Client);
+                    Debug.Log("Master identification failed..");
+                }
+            }
+        }
+        return Task.CompletedTask;
     }
 
 
