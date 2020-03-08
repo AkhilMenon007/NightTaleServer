@@ -42,7 +42,9 @@ namespace DarkRift.Client.Unity
         [SerializeField]
         [Tooltip("The IP protocol version to connect using. Obsolete, this can normally be detected from IP address.")]          //Declared in custom editor
         [Obsolete("Use IPAddress.Family instead.")]
+#pragma warning disable IDE0051 // Remove unused private members
         IPVersion ipVersion = IPVersion.IPv4;
+#pragma warning restore IDE0051 // Remove unused private members
 
         [SerializeField]
         [Tooltip("Indicates whether the client will connect to the server in the Start method.")]

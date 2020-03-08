@@ -17,7 +17,7 @@ namespace DarkRift.Server.Unity
 
         [SerializeField]
         [Tooltip("The configuration file to use.")]
-        TextAsset configuration;
+        TextAsset configuration = null;
 
         [SerializeField]
         [Tooltip("Indicates whether the server will be created in the OnEnable method.")]

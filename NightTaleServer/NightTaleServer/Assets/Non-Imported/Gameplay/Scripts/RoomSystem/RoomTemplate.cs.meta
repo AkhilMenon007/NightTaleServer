@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: c66f5faeb4608974f9fcb849ea1e5096
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - templateList: {fileID: 11400000, guid: 7c67741301407dc4cb5f690379d01061, type: 2}
+  - roomPrefab: {instanceID: 0}
+  - _fallbackRoom: {fileID: 11400000, guid: 61b8dd27102ee924e86016d2fe9f4e37, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

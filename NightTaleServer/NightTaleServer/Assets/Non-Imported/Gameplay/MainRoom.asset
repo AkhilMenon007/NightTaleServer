@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c66f5faeb4608974f9fcb849ea1e5096, type: 3}
+  m_Name: MainRoom
+  m_EditorClassIdentifier: 
+  _serverSceneID: 1
+  _playerLimit: 0
+  _lorCountX: 4
+  _lorCountY: 1
+  _lorCountZ: 4
+  _padding: {x: 5, y: 0, z: 5}
+  _sceneWidth: {x: 100, y: 50, z: 100}
+  _centre: {x: 0, y: 25, z: 0}
+  templateList: {fileID: 11400000, guid: 7c67741301407dc4cb5f690379d01061, type: 2}
+  roomPrefab: {fileID: 3529983063316286067, guid: b1a44ba80e939b14492d51220575f4e1,
+    type: 3}

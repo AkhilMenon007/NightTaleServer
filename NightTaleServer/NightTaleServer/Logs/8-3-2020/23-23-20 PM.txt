@@ -1,0 +1,40 @@
+[Trace]   DarkRiftServer        System Details:
+                                	OS: Microsoft Windows NT 10.0.18363.0
+                                	CLS Version: 4.0.30319.42000
+                                	DarkRift: 2.5.0.0 - Free
+[Trace]   PluginFactory         Created plugin 'CompatibilityBichannelListener'.
+[Trace]   DefaultNetworkListener Starting compatibility listener.
+[Info]    DefaultNetworkListener Server mounted, listening on port 4296.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:3052.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:63102.
+[Info]    ClientManager         New client [0] connected [127.0.0.1:3052|127.0.0.1:63102].
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:3055.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:63103.
+[Info]    ClientManager         New client [1] connected [127.0.0.1:3055|127.0.0.1:63103].
+[Error]   Client                An plugin encountered an error whilst handling the MessageReceived event.
+                                 System.NullReferenceException: Object reference not set to an instance of an object
+                                   at FYP.Server.RoomManagement.LocalityOfRelevance.AddPlayer (FYP.Server.NetworkTransform player) [0x00016] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\RoomSystem\LocalityOfRelevance.cs:31 
+                                   at FYP.Server.RoomManagement.Room.SpawnObject (FYP.Server.NetworkTransform objectToSpawn) [0x00016] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\RoomSystem\Room.cs:78 
+                                   at FYP.Server.RoomManagement.Room.AddPlayer (FYP.Server.Player.ServerPlayer player) [0x00032] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\RoomSystem\Room.cs:49 
+                                   at FYP.Server.RoomManagement.RoomManager.AddPlayerToRoom (FYP.Server.Player.ServerPlayer player, FYP.Server.RoomManagement.RoomTemplate room, System.UInt32 roomID) [0x0001b] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\RoomSystem\RoomManager.cs:150 
+                                   at FYP.Server.RoomManagement.RoomManager.EnterRoom (FYP.Server.Player.ServerPlayer player, System.UInt16 templateID, System.UInt32 roomID) [0x00009] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\RoomSystem\RoomManager.cs:121 
+                                   at FYP.Server.Player.PlayerTransform.SetInitialData (PlayerData data, DarkRift.Server.IClient client) [0x00001] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\Player\PlayerTransform.cs:21 
+                                   at FYP.Server.Player.ServerPlayer.Initialize (PlayerData playerData, DarkRift.Server.IClient client) [0x00022] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\Player\ServerPlayer.cs:28 
+                                   at FYP.Server.Player.PlayerManager.ClientLoggedIn (DarkRift.Server.IClient obj) [0x00071] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\Player\PlayerManager.cs:55 
+                                   at PlayerSessionManager.LoginClient (DarkRift.Server.IClient client, System.String charID) [0x0006a] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Client\ClientManagement\PlayerSessionManager.cs:166 
+                                   at PlayerSessionManager.ClientAuthRequest (System.Object sender, DarkRift.Server.MessageReceivedEventArgs e) [0x00064] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Client\ClientManagement\PlayerSessionManager.cs:191 
+                                   at (wrapper delegate-invoke) System.EventHandler`1[DarkRift.Server.MessageReceivedEventArgs].invoke_void_object_TEventArgs(object,DarkRift.Server.MessageReceivedEventArgs)
+                                   at DarkRift.Server.Client+<>c__DisplayClass43_0.<HandleIncomingMessage>b__0 () [0x00011] in <62ef1c031a10437d9cba70b183da538b>:0 
+[Error]   ClientManager         An plugin encountered an error whilst handling the ClientDisconnected event. (See logs for exception)
+                                 System.NotImplementedException: The method or operation is not implemented.
+                                   at FYP.Server.Player.PlayerManager.ClientLoggedOut (DarkRift.Server.IClient obj) [0x00001] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\Player\PlayerManager.cs:75 
+                                   at PlayerSessionManager.LogoutClient (DarkRift.Server.IClient client, System.String charID) [0x00012] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Client\ClientManagement\PlayerSessionManager.cs:141 
+                                   at PlayerSessionManager.LogoutClient (DarkRift.Server.IClient client) [0x00014] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Client\ClientManagement\PlayerSessionManager.cs:133 
+                                   at PlayerSessionManager.UnRegisterClient (System.Object sender, DarkRift.Server.ClientDisconnectedEventArgs e) [0x0002f] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Client\ClientManagement\PlayerSessionManager.cs:80 
+                                   at (wrapper delegate-invoke) System.EventHandler`1[DarkRift.Server.ClientDisconnectedEventArgs].invoke_void_object_TEventArgs(object,DarkRift.Server.ClientDisconnectedEventArgs)
+                                   at DarkRift.Server.ClientManager+<>c__DisplayClass32_0.<HandleDisconnection>b__0 () [0x0002b] in <62ef1c031a10437d9cba70b183da538b>:0 
+[Info]    ClientManager         Client [0] disconnected.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:3242.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:61617.
+[Info]    ClientManager         New client [2] connected [127.0.0.1:3242|127.0.0.1:61617].
+[Info]    ClientManager         Client [2] disconnected.

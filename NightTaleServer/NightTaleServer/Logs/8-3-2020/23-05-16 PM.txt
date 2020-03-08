@@ -1,0 +1,30 @@
+[Trace]   DarkRiftServer        System Details:
+                                	OS: Microsoft Windows NT 10.0.18363.0
+                                	CLS Version: 4.0.30319.42000
+                                	DarkRift: 2.5.0.0 - Free
+[Trace]   PluginFactory         Created plugin 'CompatibilityBichannelListener'.
+[Trace]   DefaultNetworkListener Starting compatibility listener.
+[Info]    DefaultNetworkListener Server mounted, listening on port 4296.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:2578.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:54554.
+[Info]    ClientManager         New client [0] connected [127.0.0.1:2578|127.0.0.1:54554].
+[Info]    ClientManager         Client [0] disconnected.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:2892.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:60083.
+[Info]    ClientManager         New client [1] connected [127.0.0.1:2892|127.0.0.1:60083].
+[Info]    ClientManager         Client [1] disconnected.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:2943.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:60084.
+[Info]    ClientManager         New client [2] connected [127.0.0.1:2943|127.0.0.1:60084].
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:2945.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:60085.
+[Info]    ClientManager         New client [3] connected [127.0.0.1:2945|127.0.0.1:60085].
+[Error]   Client                An plugin encountered an error whilst handling the MessageReceived event.
+                                 System.ArgumentException: The Object you want to instantiate is null.
+                                   at UnityEngine.Object.CheckNullArgument (System.Object arg, System.String message) [0x00009] in <94c5f4c38cdc42d2b006f8badef04394>:0 
+                                   at UnityEngine.Object.Instantiate[T] (T original) [0x00001] in <94c5f4c38cdc42d2b006f8badef04394>:0 
+                                   at FYP.Server.Player.PlayerManager.ClientLoggedIn (DarkRift.Server.IClient obj) [0x00057] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\Player\PlayerManager.cs:53 
+                                   at PlayerSessionManager.LoginClient (DarkRift.Server.IClient client, System.String charID) [0x0006a] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Client\ClientManagement\PlayerSessionManager.cs:166 
+                                   at PlayerSessionManager.ClientAuthRequest (System.Object sender, DarkRift.Server.MessageReceivedEventArgs e) [0x00064] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Client\ClientManagement\PlayerSessionManager.cs:191 
+                                   at (wrapper delegate-invoke) System.EventHandler`1[DarkRift.Server.MessageReceivedEventArgs].invoke_void_object_TEventArgs(object,DarkRift.Server.MessageReceivedEventArgs)
+                                   at DarkRift.Server.Client+<>c__DisplayClass43_0.<HandleIncomingMessage>b__0 () [0x00011] in <62ef1c031a10437d9cba70b183da538b>:0 
