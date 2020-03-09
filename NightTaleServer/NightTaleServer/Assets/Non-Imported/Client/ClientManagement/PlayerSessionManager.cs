@@ -19,7 +19,7 @@ public class PlayerSessionManager : MonoBehaviour
     /// <summary>
     /// Dictionary containing data received from user server for corresponding charIDs
     /// </summary>
-    private Dictionary<string, PlayerData> charData = null;
+    private Dictionary<string, ConnectedPlayer> charData = null;
     /// <summary>
     /// Mapping of the Clients which are connected to their corresponding characterIDs
     /// </summary>
@@ -37,11 +37,9 @@ public class PlayerSessionManager : MonoBehaviour
     /// <summary>
     /// Callback for when a client successfully authenticates itself
     /// </summary>
-    public Action<IClient> OnClientLoggedIn = null;
-    /// <summary>
-    /// Callback for when a client is logged out either naturally or forcefully
-    /// </summary>
-    public Action<IClient> OnClientLoggedOut = null;
+    public Action<IClient> OnClientLoggedIn { get; set; } = null;
+    public Action<IClient> OnClientLoggedOut { get; set; } = null;
+
 
     #region Initializations
 
@@ -57,7 +55,7 @@ public class PlayerSessionManager : MonoBehaviour
             return;
         }
         sessionTokens = new Dictionary<string, ushort>();
-        charData = new Dictionary<string, PlayerData>();
+        charData = new Dictionary<string, ConnectedPlayer>();
         loggedInCharacters = new Dictionary<IClient,string>();
         loggedInCharactersByID = new Dictionary<string, IClient>();
     }
@@ -92,7 +90,7 @@ public class PlayerSessionManager : MonoBehaviour
     }
     #endregion
 
-    public PlayerData GetClientData(IClient client) 
+    public ConnectedPlayer GetClientData(IClient client) 
     {
         if(loggedInCharacters.TryGetValue(client,out var charID))
         {
@@ -111,15 +109,12 @@ public class PlayerSessionManager : MonoBehaviour
         }
         return "";
     }
-    public bool SetClientData(IClient client,PlayerData data) 
+    public bool SetClientData(IClient client,ConnectedPlayer data) 
     {
         if (loggedInCharacters.TryGetValue(client, out var charID))
         {
-            if (charData.TryGetValue(charID, out var res))
-            {
-                charData[charID] = data;
-                return true;
-            }
+            charData[charID] = data;
+            return true;
         }
         return false;
     }
@@ -136,15 +131,37 @@ public class PlayerSessionManager : MonoBehaviour
 
     public void LogoutClient(IClient client, string charID)
     {
-        if (loggedInCharacters.ContainsKey(client)) 
-        {
-            OnClientLoggedOut?.Invoke(client);
-            RemoveCharacter(client, charID);
-            charData.Remove(charID);
-        }
+        OnClientLoggedOut?.Invoke(client);
+        SaveCharacterData(client);
+        charData.Remove(charID);
+        RemoveCharacter(client, charID);
+
         if (client.ConnectionState != ConnectionState.Disconnecting || client.ConnectionState != ConnectionState.Disconnected) 
         {
             client.Disconnect();
+        }
+    }
+
+    public void SaveCharacterData(IClient client) 
+    {
+        if (loggedInCharacters.TryGetValue(client,out var charID)) 
+        {
+            if (charData.TryGetValue(charID,out var data)) 
+            {
+                SaveCharacterData(charID, data);
+            }
+        }
+    }
+
+    public void SaveCharacterData(string charID,ConnectedPlayer data) 
+    {
+        using (var writer = DarkRiftWriter.Create())
+        {
+            writer.Write(new ServerCharData { charID = charID, jsonData = data.GetJsonString() });
+            using (var message = Message.Create((ushort)MasterServerNoReplyTags.SaveCharacterData, writer))
+            {
+                masterServerManager.masterServer.SendMessage(message, SendMode.Reliable);
+            }
         }
     }
 
@@ -156,13 +173,15 @@ public class PlayerSessionManager : MonoBehaviour
     {
         client.MessageReceived -= OnMasterServerLoginMessage;
         client.MessageReceived += OnLogoutRequest;
-        if (loggedInCharacters.ContainsKey(client) || loggedInCharactersByID.ContainsKey(charID)) 
+        if (loggedInCharacters.ContainsKey(client) || loggedInCharactersByID.ContainsKey(charID) || !charData.ContainsKey(charID)) 
         {
             LogoutClient(client, charID);
             return;
         }
         AddCharacter(client, charID);
         sessionTokens.Remove(charID);
+
+        var data = charData[charID];
         OnClientLoggedIn?.Invoke(client);
     }
 
@@ -233,7 +252,7 @@ public class PlayerSessionManager : MonoBehaviour
                     sessKey = (ushort)UnityEngine.Random.Range(10, ushort.MaxValue);
                 }
                 sessionTokens[data.charID] = sessKey;
-                charData[data.charID] = PlayerData.GetPlayerDataFromJSON(data.jsonData,data.charID);
+                charData[data.charID] = ConnectedPlayer.GetPlayerDataFromJSON(data.jsonData,data.charID);
 
 
                 Debug.Log($"Client {data.charID} has logged in with session key {sessKey}");

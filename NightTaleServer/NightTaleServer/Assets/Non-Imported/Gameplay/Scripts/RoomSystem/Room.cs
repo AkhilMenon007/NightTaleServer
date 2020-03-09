@@ -1,4 +1,5 @@
-﻿using FYP.Server.Player;
+﻿using DarkRift;
+using FYP.Server.Player;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,7 +11,10 @@ namespace FYP.Server.RoomManagement
     public class Room :MonoBehaviour
     {
         [SerializeField]
-        private Transform origin = null;
+        private Transform _origin = null;
+
+        public Transform origin => _origin;
+
         private Scene roomScene;
         private PhysicsScene physicsScene;
         private readonly HashSet<NetworkTransform> networkObjects = new HashSet<NetworkTransform>();
@@ -36,7 +40,6 @@ namespace FYP.Server.RoomManagement
             SceneManager.MoveGameObjectToScene(gameObject, roomScene);
         }
 
-
         public bool AddPlayer(ServerPlayer player) 
         {
             if (playersInRoom.Contains(player)) 
@@ -46,53 +49,45 @@ namespace FYP.Server.RoomManagement
             }
             if(canEnter) 
             {
-                var res = SpawnObject(player.playerTransform);
-                if (res) 
-                {
-                    playersInRoom.Add(player);
-                    player.transform.parent = transform;
-                    player.playerTransform.position = origin.position;
-                    player.playerTransform.rotation = origin.rotation;
-                    return true;
-                }
-                else 
-                {
-                    Debug.LogWarning("Failed adding player to room removing the object");
-                    RemoveObject(player.playerTransform);
-                }
+                SpawnObject(player.playerTransform);
+                playersInRoom.Add(player);
+                player.playerTransform.position = _origin.position;
+                player.playerTransform.rotation = _origin.rotation;
+                return true;
             }
             return false;
         }
+
         public void RemovePlayer(ServerPlayer player) 
         {
-            RemoveObject(player.playerTransform);
+            DestroyObject(player.playerTransform);
             playersInRoom.Remove(player);
         }
 
-        public bool SpawnObject(NetworkTransform objectToSpawn) 
+
+        public void SpawnObject(NetworkTransform objectToSpawn) 
         {
+            SceneManager.MoveGameObjectToScene(objectToSpawn.gameObject, roomScene);
+            objectToSpawn.transform.parent = transform;
             objectToSpawn.room = this;
             var lor = GetLOR(objectToSpawn.position);
-
-
-            lor.AddPlayer(objectToSpawn);
-            return networkObjects.Add(objectToSpawn);
-        }
-
-
-
-        public bool RemoveObject(NetworkTransform objectToRemove) 
-        {
-            if(objectToRemove.room == this) 
+            if(objectToSpawn is PlayerTransform player) 
             {
-                objectToRemove.room = null;
+                lor.AddPlayer(player);
             }
-            objectToRemove.lor?.RemoveObject(objectToRemove);
-
-            return networkObjects.Remove(objectToRemove);
+            else 
+            {
+                lor.AddObject(objectToSpawn);
+            }
+            networkObjects.Add(objectToSpawn);
+            objectToSpawn.OnEnteredRoom?.Invoke(this);
         }
-
-
+        public void DestroyObject(NetworkTransform objectToRemove) 
+        {
+            objectToRemove.lor?.RemoveObject(objectToRemove);
+            networkObjects.Remove(objectToRemove);
+        }
+        
         public LocalityOfRelevance GetLOR(Vector3 position) 
         {
             position += roomTemplate.sceneSize / 2f;
@@ -107,11 +102,23 @@ namespace FYP.Server.RoomManagement
 
             return localityOfRelevances[x,y,z];
         }
+
         private void OnDrawGizmos()
         {
-            foreach (var item in localityOfRelevances)
+            if (localityOfRelevances != null) 
             {
-                Gizmos.DrawWireCube(item.bounds.center, item.bounds.size);
+                foreach (var item in localityOfRelevances)
+                {
+                    Gizmos.DrawWireCube(item.bounds.center, item.bounds.size);
+                }
+            }
+        }
+
+        public void SendMessageToEntireRoom(Message message,SendMode sendMode) 
+        {
+            foreach (var player in playersInRoom)
+            {
+                player.client.SendMessage(message, sendMode);
             }
         }
 
@@ -139,7 +146,7 @@ namespace FYP.Server.RoomManagement
                     for (int z = 0; z < roomTemplate.lorCountZ; z++)
                     {
 
-                        localityOfRelevances[x, y, z] = new LocalityOfRelevance(new Bounds(lorPosition, lorBufferedSize));
+                        localityOfRelevances[x, y, z] = new LocalityOfRelevance(this,new Bounds(lorPosition, lorBufferedSize),x,y,z);
                         lorPosition.z += lorIncrement.z;
                     }
                     lorPosition.y += lorIncrement.y;
@@ -176,6 +183,20 @@ namespace FYP.Server.RoomManagement
 
         public void Close()
         {
+            var stack = new Stack<ServerPlayer>();
+            foreach (var item in playersInRoom)
+            {
+                stack.Push(item);
+            }
+            while (stack.Count > 0) 
+            {
+                var obj = stack.Pop();
+                RemovePlayer(obj);
+            }
+            foreach (var obj in networkObjects)
+            {
+                obj.OnLeftRoom?.Invoke(this);
+            }
             Destroy(gameObject);
         }
     }

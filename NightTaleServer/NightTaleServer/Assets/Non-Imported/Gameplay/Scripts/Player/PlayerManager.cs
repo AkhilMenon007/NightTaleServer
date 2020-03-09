@@ -55,24 +55,26 @@ namespace FYP.Server.Player
             playerObj.Initialize(data,obj);
         }
 
-        private PlayerData GetNewPlayerData(string charID) 
+        private ConnectedPlayer GetNewPlayerData(string charID) 
         {
-            var res = new PlayerData
-            {
-                charID = charID,
-                positionalData = new PlayerPositionalData 
-                { 
-                    instanceID = roomManager.defaultRoomID, 
-                    position = roomManager.defaultRoomTemplate.centre, 
-                    templateID = roomManager.defaultRoomTemplate.templateID 
-                }
-            };
+            var res = new ConnectedPlayer();
+            res.charID = charID;
+            res.positionalData = new PlayerPositionalData();
+            var pos = res.positionalData;
+            pos.instanceID = roomManager.defaultRoomID;
+            pos.position = roomManager.defaultRoom.origin.position;
+            pos.templateID = roomManager.defaultRoomTemplate.templateID;
+
             return res;
         }
 
         private void ClientLoggedOut(IClient obj)
         {
-
+            if(playerObjectLookUp.TryGetValue(obj,out var res)) 
+            {
+                res.Delete();
+                playerObjectLookUp.Remove(obj);
+            }
         }
 
         private void OnDisable()

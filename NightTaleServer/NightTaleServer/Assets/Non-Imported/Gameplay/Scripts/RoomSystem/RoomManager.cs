@@ -15,6 +15,8 @@ namespace FYP.Server.RoomManagement
         private RoomTemplate _defaultRoomTemplate = null;
         public RoomTemplate defaultRoomTemplate => _defaultRoomTemplate;
 
+        public Room defaultRoom { get; private set; } = null;
+
         [SerializeField]
         private TemplateList templateList = null;
 
@@ -23,7 +25,7 @@ namespace FYP.Server.RoomManagement
         private List<RoomTemplate> persistentInstances = new List<RoomTemplate>();
         public static RoomManager instance = null;
 
-        private Dictionary<ushort, Dictionary<uint, Room>> roomInstances = new Dictionary<ushort, Dictionary<uint, Room>>();
+        private readonly Dictionary<ushort, Dictionary<uint, Room>> roomInstances = new Dictionary<ushort, Dictionary<uint, Room>>();
         private bool defaultRoomCreated;
 
         public uint defaultRoomID { get; private set; } = 0;
@@ -78,12 +80,14 @@ namespace FYP.Server.RoomManagement
 
         private void CreateDefaultRoom()
         {
-            if (!CreateRoom(_defaultRoomTemplate, defaultRoomID))
+            var room = CreateRoom(_defaultRoomTemplate, defaultRoomID);
+            if (room == null)
             {
                 Debug.LogError($"Error creating default room");
             }
             else
             {
+                defaultRoom = room;
                 defaultRoomCreated = true;
             }
         }
@@ -93,12 +97,12 @@ namespace FYP.Server.RoomManagement
             return templateList.GetTemplateID(tempID);
         }
 
-        public bool CreateRoom(RoomTemplate template) 
+        public Room CreateRoom(RoomTemplate template) 
         {
             return CreateRoom(template, GetNextRoomID());
         }
 
-        private bool CreateRoom(RoomTemplate template,uint id)
+        private Room CreateRoom(RoomTemplate template,uint id)
         {
             var room = template.CreateRoom(id);
             if (!roomInstances.ContainsKey(template.templateID)) 
@@ -109,10 +113,10 @@ namespace FYP.Server.RoomManagement
             {
                 room.Close();
                 Debug.LogError("Duplicate instance ID");
-                return false;
+                return null;
             }
             roomInstances[template.templateID][room.roomID] = room;
-            return true;
+            return room;
         }
 
         public Room EnterRoom(ServerPlayer player,ushort templateID,uint roomID) 
@@ -130,6 +134,11 @@ namespace FYP.Server.RoomManagement
             return res;
         }
 
+        public Room EnterDefaultRoom(ServerPlayer player) 
+        {
+            return EnterRoom(player, defaultRoomTemplate.templateID, defaultRoomID);
+        }
+
         public bool ChangeRoom(ServerPlayer player,ushort templateID,uint roomID) 
         {
             var targetRoom = GetRoom(templateID, roomID);
@@ -142,14 +151,19 @@ namespace FYP.Server.RoomManagement
             return targetRoom.AddPlayer(player);
         }
 
+        public void LeaveRoom(ServerPlayer player)
+        {
+            player.playerTransform.room.RemovePlayer(player);
+        }
+
         private Room AddPlayerToRoom(ServerPlayer player,RoomTemplate room,uint roomID) 
         {
             if(room != null) 
             {
-                var instRoom = GetRoom(room.templateID, roomID);
-                if (instRoom != null && instRoom.AddPlayer(player)) 
+                var roomInst = GetRoom(room.templateID, roomID);
+                if (roomInst != null && roomInst.AddPlayer(player)) 
                 {
-                    return instRoom;
+                    return roomInst;
                 }
             }
             return null;

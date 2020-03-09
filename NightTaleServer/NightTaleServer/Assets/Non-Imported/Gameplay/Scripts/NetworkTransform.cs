@@ -8,15 +8,16 @@ namespace FYP.Server
     public class NetworkTransform : MonoBehaviour
     {
         public Room room { get; set; }
-        public Vector3 position { get; set; }
-        public Quaternion rotation { get; set; }
-
-        private RoomManager roomManager => RoomManager.instance;
-
         public LocalityOfRelevance lor { get; set; }
+        public Vector3 position { get => transform.position; set => SetObjectPosition(value); }
+        public Quaternion rotation { get => transform.rotation; set => transform.rotation = value; }
+        public Action<Room> OnLeftRoom { get; set; }
+        public Action<Room> OnEnteredRoom { get; set; }
 
-        public Action<LocalityOfRelevance> OnLOREntered { get; set; }
-        public Action<LocalityOfRelevance> OnLORExited { get; set; }
+        private void SetObjectPosition(Vector3 value)
+        {
+            transform.position = value;
+        }
 
     }
 }
