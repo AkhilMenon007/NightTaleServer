@@ -24,12 +24,13 @@ namespace FYP.Server.RoomManagement
         [SerializeField]
         private List<RoomTemplate> persistentInstances = new List<RoomTemplate>();
         public static RoomManager instance = null;
-
-        private readonly Dictionary<ushort, Dictionary<uint, Room>> roomInstances = new Dictionary<ushort, Dictionary<uint, Room>>();
         private bool defaultRoomCreated;
 
         public uint defaultRoomID { get; private set; } = 0;
 
+        public Dictionary<ushort, Dictionary<uint, Room>> RoomInstancesByTemplateID { get; } = new Dictionary<ushort, Dictionary<uint, Room>>();
+        public Dictionary<uint, Room> RoomInstances { get; } = new Dictionary<uint, Room>();
+        public Dictionary<RoomTemplate, uint> persistentRoomIDs { get; } = new Dictionary<RoomTemplate, uint>();
         private uint roomIDCounter = 1;
 
         private void Awake()
@@ -76,6 +77,10 @@ namespace FYP.Server.RoomManagement
             {
                 CreateDefaultRoom();
             }
+            foreach (var room in RoomInstances)
+            {
+                persistentRoomIDs[room.Value.roomTemplate] = room.Key;
+            }
         }
 
         private void CreateDefaultRoom()
@@ -105,63 +110,65 @@ namespace FYP.Server.RoomManagement
         private Room CreateRoom(RoomTemplate template,uint id)
         {
             var room = template.CreateRoom(id);
-            if (!roomInstances.ContainsKey(template.templateID)) 
+            if (!RoomInstancesByTemplateID.ContainsKey(template.templateID)) 
             {
-                roomInstances.Add(template.templateID, new Dictionary<uint, Room>());
+                RoomInstancesByTemplateID.Add(template.templateID, new Dictionary<uint, Room>());
             }
-            if (roomInstances[template.templateID].ContainsKey(room.roomID)) 
+            if (RoomInstancesByTemplateID[template.templateID].ContainsKey(room.instanceID)) 
             {
                 room.Close();
                 Debug.LogError("Duplicate instance ID");
                 return null;
             }
-            roomInstances[template.templateID][room.roomID] = room;
+            RoomInstancesByTemplateID[template.templateID][room.instanceID] = room;
+            RoomInstances[room.instanceID] = room;
             return room;
         }
 
-        public Room EnterRoom(ServerPlayer player,ushort templateID,uint roomID) 
+        public Room EnterRoom(PlayerEntity player,ushort templateID,uint roomID) 
         {
             var template = GetTemplate(templateID);
             var res = AddPlayerToRoom(player,template, roomID);
             if(res == null) 
             {
-                res = AddPlayerToRoom(player, template.fallbackRoom, 0);
+                res = AddPlayerToRoom(player, template.fallbackRoom, persistentRoomIDs[template]);
                 if(res == null) 
                 {
-                    res = AddPlayerToRoom(player, defaultRoomTemplate, 0);
+                    res = AddPlayerToRoom(player, defaultRoomTemplate, defaultRoomID);
                 }
             }
+
             return res;
         }
 
-        public Room EnterDefaultRoom(ServerPlayer player) 
+        public Room EnterDefaultRoom(PlayerEntity player) 
         {
             return EnterRoom(player, defaultRoomTemplate.templateID, defaultRoomID);
         }
 
-        public bool ChangeRoom(ServerPlayer player,ushort templateID,uint roomID) 
+        public bool ChangeRoom(PlayerEntity player,ushort templateID,uint roomID) 
         {
             var targetRoom = GetRoom(templateID, roomID);
             if(targetRoom == null || !targetRoom.canEnter) 
             {
                 return false;
             }
-            player.playerTransform.room.RemovePlayer(player);
+            player.room.RemovePlayer(player);
             
             return targetRoom.AddPlayer(player);
         }
 
-        public void LeaveRoom(ServerPlayer player)
+        public void LeaveRoom(PlayerEntity player,Room room)
         {
-            player.playerTransform.room.RemovePlayer(player);
+            player.room.RemovePlayer(player);
         }
 
-        private Room AddPlayerToRoom(ServerPlayer player,RoomTemplate room,uint roomID) 
+        private Room AddPlayerToRoom(PlayerEntity player,RoomTemplate room,uint roomID) 
         {
             if(room != null) 
             {
                 var roomInst = GetRoom(room.templateID, roomID);
-                if (roomInst != null && roomInst.AddPlayer(player)) 
+                if (roomInst != null && roomInst.AddPlayer(player))
                 {
                     return roomInst;
                 }
@@ -172,14 +179,35 @@ namespace FYP.Server.RoomManagement
 
         public Room GetRoom(ushort templateID,uint roomID) 
         {
-            if (roomInstances.ContainsKey(templateID)) 
+            if (RoomInstancesByTemplateID.ContainsKey(templateID)) 
             {
-                if (roomInstances[templateID].ContainsKey(roomID)) 
+                if (RoomInstancesByTemplateID[templateID].ContainsKey(roomID)) 
                 {
-                    return roomInstances[templateID][roomID];
+                    return RoomInstancesByTemplateID[templateID][roomID];
                 }
             }
             return null;
+        }
+        public Room GetRoom(uint roomID) 
+        {
+            if(RoomInstances.TryGetValue(roomID,out var room)) 
+            {
+                return room;
+            }
+            return null;
+        }
+
+        public void DeleteRoom(uint roomID) 
+        {
+            if(RoomInstances.TryGetValue(roomID,out var room)) 
+            {
+                if (RoomInstancesByTemplateID.TryGetValue(room.roomTemplate.templateID,out var tempDict)) 
+                {
+                    tempDict.Remove(roomID);
+                }
+                RoomInstances.Remove(roomID);
+                room.Close();
+            }
         }
     }
 }

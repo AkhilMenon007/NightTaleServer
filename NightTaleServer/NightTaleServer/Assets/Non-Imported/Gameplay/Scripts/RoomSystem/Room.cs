@@ -12,18 +12,23 @@ namespace FYP.Server.RoomManagement
     {
         [SerializeField]
         private Transform _origin = null;
+        [SerializeField]
+        private ushort _clientSceneIndex = 0;
 
+        public ushort clientSceneIndex => _clientSceneIndex;
+        public int playerCount => players.Count;
         public Transform origin => _origin;
 
         private Scene roomScene;
         private PhysicsScene physicsScene;
-        private readonly HashSet<NetworkTransform> networkObjects = new HashSet<NetworkTransform>();
-        private readonly HashSet<ServerPlayer> playersInRoom = new HashSet<ServerPlayer>();
+        public HashSet<ServerNetworkEntity> networkEntities { get; } = new HashSet<ServerNetworkEntity>();
+        public HashSet<PlayerEntity> players { get; } = new HashSet<PlayerEntity>();
+
         private LocalityOfRelevance[,,] localityOfRelevances;
-        public uint roomID { get; private set; } = 0;
+        public uint instanceID { get; private set; } = 0;
         public RoomTemplate roomTemplate { get; private set; }
 
-        public int roomCount => playersInRoom.Count;
+        public int roomCount => players.Count;
         public int maxCapacity => roomTemplate.playerLimit;
 
         public bool canEnter => maxCapacity == 0 || roomCount < maxCapacity;
@@ -32,46 +37,46 @@ namespace FYP.Server.RoomManagement
         {
             this.roomTemplate = roomTemplate;
             PopulateLOR(roomTemplate);
-            roomID = id;
+            instanceID = id;
 
             CreateSceneParameters csp = new CreateSceneParameters(LocalPhysicsMode.Physics3D);
-            roomScene = SceneManager.CreateScene($"Room_{roomID.ToString()}",csp);
+            roomScene = SceneManager.CreateScene($"Room_{instanceID.ToString()}",csp);
             physicsScene = roomScene.GetPhysicsScene();
             SceneManager.MoveGameObjectToScene(gameObject, roomScene);
         }
 
-        public bool AddPlayer(ServerPlayer player) 
+        public bool AddPlayer(PlayerEntity player) 
         {
-            if (playersInRoom.Contains(player)) 
+            if (players.Contains(player)) 
             {
                 Debug.LogWarning("Tried adding same player to room");
                 return false;
             }
             if(canEnter) 
             {
-                SpawnObject(player.playerTransform);
-                playersInRoom.Add(player);
-                player.playerTransform.position = _origin.position;
-                player.playerTransform.rotation = _origin.rotation;
+                players.Add(player);
+                SpawnObject(player);
+                player.position = _origin.position;
+                player.rotation = _origin.rotation;
                 return true;
             }
             return false;
         }
 
-        public void RemovePlayer(ServerPlayer player) 
+        public void RemovePlayer(PlayerEntity player) 
         {
-            DestroyObject(player.playerTransform);
-            playersInRoom.Remove(player);
+            DestroyObject(player);
+            players.Remove(player);
         }
 
 
-        public void SpawnObject(NetworkTransform objectToSpawn) 
+        public void SpawnObject(ServerNetworkEntity objectToSpawn) 
         {
             SceneManager.MoveGameObjectToScene(objectToSpawn.gameObject, roomScene);
             objectToSpawn.transform.parent = transform;
             objectToSpawn.room = this;
             var lor = GetLOR(objectToSpawn.position);
-            if(objectToSpawn is PlayerTransform player) 
+            if(objectToSpawn is PlayerEntity player) 
             {
                 lor.AddPlayer(player);
             }
@@ -79,13 +84,14 @@ namespace FYP.Server.RoomManagement
             {
                 lor.AddObject(objectToSpawn);
             }
-            networkObjects.Add(objectToSpawn);
+            networkEntities.Add(objectToSpawn);
             objectToSpawn.OnEnteredRoom?.Invoke(this);
         }
-        public void DestroyObject(NetworkTransform objectToRemove) 
+        public void DestroyObject(ServerNetworkEntity objectToRemove)
         {
+            objectToRemove.OnLeftRoom?.Invoke(this);
             objectToRemove.lor?.RemoveObject(objectToRemove);
-            networkObjects.Remove(objectToRemove);
+            networkEntities.Remove(objectToRemove);
         }
         
         public LocalityOfRelevance GetLOR(Vector3 position) 
@@ -114,11 +120,21 @@ namespace FYP.Server.RoomManagement
             }
         }
 
-        public void SendMessageToEntireRoom(Message message,SendMode sendMode) 
+        public void SendMessageToEntireRoom(Message message, SendMode sendMode)
         {
-            foreach (var player in playersInRoom)
+            foreach (var player in players)
             {
-                player.client.SendMessage(message, sendMode);
+                player.player.client.SendMessage(message, sendMode);
+            }
+        }
+        public void SendMessageToEntireRoomExceptPlayer(PlayerEntity sender,Message message, SendMode sendMode)
+        {
+            foreach (var player in players)
+            {
+                if (sender != player)
+                {
+                    player.player.client.SendMessage(message, sendMode);
+                }
             }
         }
 
@@ -183,8 +199,8 @@ namespace FYP.Server.RoomManagement
 
         public void Close()
         {
-            var stack = new Stack<ServerPlayer>();
-            foreach (var item in playersInRoom)
+            var stack = new Stack<PlayerEntity>();
+            foreach (var item in players)
             {
                 stack.Push(item);
             }
@@ -193,7 +209,7 @@ namespace FYP.Server.RoomManagement
                 var obj = stack.Pop();
                 RemovePlayer(obj);
             }
-            foreach (var obj in networkObjects)
+            foreach (var obj in networkEntities)
             {
                 obj.OnLeftRoom?.Invoke(this);
             }

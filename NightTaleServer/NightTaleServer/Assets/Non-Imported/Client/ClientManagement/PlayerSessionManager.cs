@@ -206,12 +206,12 @@ public class PlayerSessionManager : MonoBehaviour
                 {
                     if (loginData.Token == token)
                     {
-                        e.Client.SendMessageNoContent((ushort)ClientTags.LoginRequestAccepted, SendMode.Reliable);
                         LoginClient(e.Client, loginData.CharID);
+                        e.Client.SendMessageNoContent((ushort)ServerTags.LoginRequestAccepted, SendMode.Reliable);
                         return;
                     }
                 }
-                e.Client.SendMessageNoContent((ushort)ClientTags.LoginRequestDenied, SendMode.Reliable);
+                e.Client.SendMessageNoContent((ushort)ServerTags.LoginRequestDenied, SendMode.Reliable);
             }
         }
     }

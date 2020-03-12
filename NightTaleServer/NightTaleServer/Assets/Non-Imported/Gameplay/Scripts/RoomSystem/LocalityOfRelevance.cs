@@ -9,7 +9,7 @@ namespace FYP.Server.RoomManagement
     public class LocalityOfRelevance
     {
         private readonly HashSet<IClient> players = new HashSet<IClient>();
-        private readonly HashSet<NetworkTransform> objects = new HashSet<NetworkTransform>();
+        private readonly HashSet<ServerNetworkEntity> objects = new HashSet<ServerNetworkEntity>();
         public readonly List<LocalityOfRelevance> adjacentLoRs = new List<LocalityOfRelevance>();
 
         public readonly Bounds bounds;
@@ -32,22 +32,22 @@ namespace FYP.Server.RoomManagement
         {
             return players;
         }
-        public void AddPlayer(PlayerTransform player) 
+        public void AddPlayer(PlayerEntity player) 
         {
             players.Add(player.player.client);
             AddObject(player);
         }
-        public void RemovePlayer(PlayerTransform player) 
+        public void RemovePlayer(PlayerEntity player) 
         {
             RemoveObject(player);
             players.Remove(player.player.client);
         }
-        public void AddObject(NetworkTransform obj)
+        public void AddObject(ServerNetworkEntity obj)
         {
             objects.Add(obj);
             obj.lor = this;
         }
-        public void RemoveObject(NetworkTransform obj) 
+        public void RemoveObject(ServerNetworkEntity obj) 
         {
             objects.Remove(obj);
             if(obj.lor == this) 
@@ -55,14 +55,14 @@ namespace FYP.Server.RoomManagement
                 obj.lor = null;
             }
         }
-        public void TransferPlayer(PlayerTransform player,LocalityOfRelevance target) 
+        public void TransferPlayer(PlayerEntity player,LocalityOfRelevance target) 
         {
             target?.AddPlayer(player);
             RemovePlayer(player);
         }
-        public void TransferObject(NetworkTransform obj,LocalityOfRelevance target) 
+        public void TransferObject(ServerNetworkEntity obj,LocalityOfRelevance target) 
         {
-            if(obj is PlayerTransform player) 
+            if(obj is PlayerEntity player) 
             {
                 TransferPlayer(player, target);
                 return;

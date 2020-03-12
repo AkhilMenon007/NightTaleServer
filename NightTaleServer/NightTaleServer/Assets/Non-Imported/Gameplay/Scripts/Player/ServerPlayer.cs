@@ -7,20 +7,21 @@ using UnityEngine;
 
 namespace FYP.Server.Player
 {
-    [RequireComponent(typeof(PlayerTransform))]
+    [RequireComponent(typeof(PlayerEntity))]
     public class ServerPlayer : MonoBehaviour
     {
-        private ConnectedPlayer playerData;
+        public ConnectedPlayer playerData { get; private set; }
         public IClient client { get; private set; }
         public string charID { get; private set; }
-        public PlayerTransform playerTransform { get; private set; } = null;
+        public PlayerEntity playerTransform { get; private set; } = null;
         public Action<ConnectedPlayer, IClient> OnInitialize { get; set; }
         public Action<ConnectedPlayer> OnDataSave { get; set; }
         public Action OnDelete{ get; set; }
 
+
         private void Awake()
         {
-            playerTransform = GetComponent<PlayerTransform>();
+            playerTransform = GetComponent<PlayerEntity>();
         }
         public void Initialize(ConnectedPlayer playerData,IClient client) 
         {
