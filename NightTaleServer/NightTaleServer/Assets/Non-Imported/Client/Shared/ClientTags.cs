@@ -7,6 +7,8 @@ namespace FYP.Shared
         LoginRequest,
         LogoutRequest,
 
+        //---------ROOM TAGS--------------
+
         /// <summary>
         /// Request server to join room
         /// </summary>
@@ -23,6 +25,14 @@ namespace FYP.Shared
         /// Requests server to create a room with a given template ID
         /// </summary>
         CreateRoomRequest,
+
+        //----- UPDATE DATA------
+
+        /// <summary>
+        /// Update data sent to server every tick
+        /// </summary>
+        ClientUpdate,
+
 
         /// <summary>
         /// This tag is used to chain to server tags
@@ -54,6 +64,14 @@ namespace FYP.Shared
         /// Send message to client indicating an entity has been created at the server
         /// </summary>
         EntitySpawned
+    }
+
+    public enum ClientDataTags 
+    {
+        /// <summary>
+        /// Asks server to move an object
+        /// </summary>
+        MoveObject
     }
 
 }

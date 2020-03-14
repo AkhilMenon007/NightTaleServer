@@ -2,56 +2,29 @@
 using DarkriftSerializationExtensions;
 using UnityEngine;
 
-public struct RoomCreationRequest : IDarkRiftSerializable
+/// <summary>
+/// Client Update Data sent every tick
+/// </summary>
+public struct UpdateData : IDarkRiftSerializable
 {
-    public ushort templateID;
-
+    /// <summary>
+    /// Tag used to identify the kind of update
+    /// </summary>
+    public ushort tag;
     public void Deserialize(DeserializeEvent e)
     {
-        templateID = e.Reader.ReadUInt16();
+        tag = e.Reader.ReadUInt16();
     }
 
     public void Serialize(SerializeEvent e)
     {
-        e.Writer.Write(templateID);
+        e.Writer.Write(tag);
     }
 }
 
-public struct RoomJoinRequest : IDarkRiftSerializable
-{
-    public uint roomInstanceID;
-
-    public void Deserialize(DeserializeEvent e)
-    {
-        roomInstanceID = e.Reader.ReadUInt32();
-    }
-
-    public void Serialize(SerializeEvent e)
-    {
-        e.Writer.Write(roomInstanceID);
-    }
-}
-
-public struct RoomData : IDarkRiftSerializable
-{
-    public ushort templateID;
-    public uint roomInstanceID;
-    public void Deserialize(DeserializeEvent e)
-    {
-        templateID = e.Reader.ReadUInt16();
-        roomInstanceID = e.Reader.ReadUInt32();
-    }
-
-    public void Serialize(SerializeEvent e)
-    {
-        e.Writer.Write(templateID);
-        e.Writer.Write(roomInstanceID);
-    }
-    //Following this will be a list of entitydata
-}
 
 /// <summary>
-/// Base Data to write entityData
+/// Base info regarding entity data
 /// </summary>
 public struct EntityData : IDarkRiftSerializable 
 {
@@ -76,22 +49,6 @@ public struct EntityData : IDarkRiftSerializable
     }
 
 }
-
-public struct RoomLeftMessage : IDarkRiftSerializable
-{
-    public ushort clientID;
-    public uint roomID;
-    public void Deserialize(DeserializeEvent e)
-    {
-        clientID = e.Reader.ReadUInt16();
-    }
-
-    public void Serialize(SerializeEvent e)
-    {
-        e.Writer.Write(clientID);
-    }
-}
-
 
 /// <summary>
 /// Sent From Server to client indicating the scene to load and the server instanceID associated with it
@@ -137,6 +94,7 @@ public struct NewPlayerData : IDarkRiftSerializable
         e.Writer.Write(transformData);
     }
 }
+
 public struct PlayerTransformData : IDarkRiftSerializable
 {
     public ushort clientID;
@@ -195,3 +153,4 @@ public struct TransformData : IDarkRiftSerializable
         e.Writer.WriteQuaternionCompressed(rotation);
     }
 }
+

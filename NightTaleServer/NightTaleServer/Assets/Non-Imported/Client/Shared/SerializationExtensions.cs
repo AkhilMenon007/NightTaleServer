@@ -145,7 +145,7 @@ namespace DarkriftSerializationExtensions
             }
         }
 
-        private static bool GetBit(this byte b, int bitIndex)
+        public static bool GetBit(this byte b, int bitIndex)
         {
             return ((b >> bitIndex) & 1) != 0;
         }

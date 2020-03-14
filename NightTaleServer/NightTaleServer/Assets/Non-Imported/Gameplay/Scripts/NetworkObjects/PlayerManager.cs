@@ -16,6 +16,7 @@ namespace FYP.Server.Player
         private RoomManager roomManager => RoomManager.instance;
 
         private readonly Dictionary<IClient, ServerPlayer> playerObjectLookUp = new Dictionary<IClient, ServerPlayer>();
+
         private void Awake()
         {
             if(instance == null) 
@@ -34,6 +35,11 @@ namespace FYP.Server.Player
         {
             sessionManager.OnClientLoggedIn += ClientLoggedIn;
             sessionManager.OnClientLoggedOut += ClientLoggedOut;
+        }
+
+        public ServerPlayer GetPlayer(IClient client) 
+        {
+            return playerObjectLookUp.ContainsKey(client) ? playerObjectLookUp[client] : null;
         }
 
         private void ClientLoggedIn(IClient obj)

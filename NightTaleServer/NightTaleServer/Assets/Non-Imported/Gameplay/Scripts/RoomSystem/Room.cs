@@ -21,7 +21,7 @@ namespace FYP.Server.RoomManagement
 
         private Scene roomScene;
         private PhysicsScene physicsScene;
-        public HashSet<ServerNetworkEntity> networkEntities { get; } = new HashSet<ServerNetworkEntity>();
+        public Dictionary<uint,ServerNetworkEntity> networkEntities { get; } = new Dictionary<uint, ServerNetworkEntity>();
         public HashSet<PlayerEntity> players { get; } = new HashSet<PlayerEntity>();
 
         private LocalityOfRelevance[,,] localityOfRelevances;
@@ -33,6 +33,13 @@ namespace FYP.Server.RoomManagement
 
         public bool canEnter => maxCapacity == 0 || roomCount < maxCapacity;
 
+
+        private uint nextEntityID = 0;
+
+        private uint GetNextEntityID() 
+        {
+            return nextEntityID++;
+        }
         public void Initialize(RoomTemplate roomTemplate,uint id)
         {
             this.roomTemplate = roomTemplate;
@@ -73,6 +80,8 @@ namespace FYP.Server.RoomManagement
         public void SpawnObject(ServerNetworkEntity objectToSpawn) 
         {
             SceneManager.MoveGameObjectToScene(objectToSpawn.gameObject, roomScene);
+            var entID = GetNextEntityID();
+            objectToSpawn.entityID = entID;
             objectToSpawn.transform.parent = transform;
             objectToSpawn.room = this;
             var lor = GetLOR(objectToSpawn.position);
@@ -84,14 +93,14 @@ namespace FYP.Server.RoomManagement
             {
                 lor.AddObject(objectToSpawn);
             }
-            networkEntities.Add(objectToSpawn);
+            networkEntities.Add(entID,objectToSpawn);
             objectToSpawn.OnEnteredRoom?.Invoke(this);
         }
         public void DestroyObject(ServerNetworkEntity objectToRemove)
         {
             objectToRemove.OnLeftRoom?.Invoke(this);
             objectToRemove.lor?.RemoveObject(objectToRemove);
-            networkEntities.Remove(objectToRemove);
+            networkEntities.Remove(objectToRemove.entityID);
         }
         
         public LocalityOfRelevance GetLOR(Vector3 position) 
@@ -119,6 +128,15 @@ namespace FYP.Server.RoomManagement
                 }
             }
         }
+
+        private void FixedUpdate()
+        {
+            foreach (var lor in localityOfRelevances)
+            {
+
+            }
+        }
+
 
         public void SendMessageToEntireRoom(Message message, SendMode sendMode)
         {
@@ -209,10 +227,11 @@ namespace FYP.Server.RoomManagement
                 var obj = stack.Pop();
                 RemovePlayer(obj);
             }
-            foreach (var obj in networkEntities)
+            foreach (var obj in networkEntities.Values)
             {
                 obj.OnLeftRoom?.Invoke(this);
             }
+            networkEntities.Clear();
             Destroy(gameObject);
         }
     }

@@ -8,9 +8,12 @@ using UnityEngine;
 namespace FYP.Server.Player
 {
     [RequireComponent(typeof(PlayerEntity))]
+    [RequireComponent(typeof(PlayerInputController))]
     public class ServerPlayer : MonoBehaviour
     {
         public ConnectedPlayer playerData { get; private set; }
+        public PlayerInputController inputController { get; private set; }
+        public PlayerOutputController outputController { get; private set; }
         public IClient client { get; private set; }
         public string charID { get; private set; }
         public PlayerEntity playerTransform { get; private set; } = null;
@@ -22,6 +25,8 @@ namespace FYP.Server.Player
         private void Awake()
         {
             playerTransform = GetComponent<PlayerEntity>();
+            inputController = GetComponent<PlayerInputController>();
+            outputController = GetComponent<PlayerOutputController>();
         }
         public void Initialize(ConnectedPlayer playerData,IClient client) 
         {

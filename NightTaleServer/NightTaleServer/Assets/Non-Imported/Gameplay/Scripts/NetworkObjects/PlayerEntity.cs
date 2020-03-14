@@ -9,7 +9,6 @@ using UnityEngine;
 
 namespace FYP.Server.Player
 {
-    [RequireComponent(typeof(ServerPlayer))]
     public class PlayerEntity : ServerNetworkEntity
     {
         public ServerPlayer player { get; private set; }
@@ -23,6 +22,7 @@ namespace FYP.Server.Player
 
         private void SetInitialData(ConnectedPlayer data, IClient client)
         {
+            SetOwner(player);
             player.OnDataSave += SavePlayerData;
             player.OnDelete += DeletePlayer;
             OnEnteredRoom += PlayerJoinedRoomCallback;
@@ -30,7 +30,20 @@ namespace FYP.Server.Player
             client.MessageReceived += RoomDataRequestCallback;
             client.MessageReceived += JoinLastRoomRequestCallback;
         }
-
+        public override void WriteDataToWriter(DarkRiftWriter writer)
+        {
+            writer.Write(new NewPlayerData()
+            {
+                charID = player.charID,
+                clientID = player.client.ID,
+                vrEnabled = vrEnabled,
+                transformData = new TransformData()
+                {
+                    position = position,
+                    rotation = rotation
+                }
+            });
+        }
         private void JoinLastRoomRequestCallback(object sender, MessageReceivedEventArgs e)
         {
             if(e.Tag == (ushort)ClientTags.JoinLastRoomRequest) 
@@ -81,7 +94,7 @@ namespace FYP.Server.Player
                     using (var writer = DarkRiftWriter.Create())
                     {
                         writer.Write(new RoomData() { roomInstanceID = room.instanceID,templateID = room.roomTemplate.templateID });
-                        foreach (var entity in roomManager.GetRoom(room.instanceID).networkEntities)
+                        foreach (var entity in roomManager.GetRoom(room.instanceID).networkEntities.Values)
                         {
                             writer.Write(new EntityData() { entityID = entity.entityID, entityType = entity.entityType });
                             entity.WriteDataToWriter(writer);
@@ -112,6 +125,7 @@ namespace FYP.Server.Player
         }
         private void DeletePlayer()
         {
+            RemoveOwner();
             player.OnDataSave -= SavePlayerData;
             player.OnDelete -= DeletePlayer;
             OnEnteredRoom -= PlayerJoinedRoomCallback;
@@ -128,19 +142,6 @@ namespace FYP.Server.Player
             obj.positionalData.templateID = room.roomTemplate.templateID;
             obj.positionalData.position = position;
         }
-        public override void WriteDataToWriter(DarkRiftWriter writer)
-        {
-            writer.Write(new NewPlayerData() 
-            {   
-                charID = player.charID,
-                clientID = player.client.ID,
-                vrEnabled = vrEnabled,
-                transformData = new TransformData() 
-                {
-                    position = position, 
-                    rotation = rotation
-                }
-            });
-        }
+
     }
 }
