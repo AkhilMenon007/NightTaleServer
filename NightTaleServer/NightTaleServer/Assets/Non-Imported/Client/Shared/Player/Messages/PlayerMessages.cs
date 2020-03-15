@@ -2,31 +2,13 @@
 using DarkriftSerializationExtensions;
 using UnityEngine;
 
-/// <summary>
-/// Client Update Data sent every tick
-/// </summary>
-public struct UpdateData : IDarkRiftSerializable
-{
-    /// <summary>
-    /// Tag used to identify the kind of update
-    /// </summary>
-    public ushort tag;
-    public void Deserialize(DeserializeEvent e)
-    {
-        tag = e.Reader.ReadUInt16();
-    }
 
-    public void Serialize(SerializeEvent e)
-    {
-        e.Writer.Write(tag);
-    }
-}
 
 
 /// <summary>
 /// Base info regarding entity data
 /// </summary>
-public struct EntityData : IDarkRiftSerializable 
+public struct EntityCreationData : IDarkRiftSerializable 
 {
     /// <summary>
     /// The type of prefab to be instantiated
@@ -47,8 +29,23 @@ public struct EntityData : IDarkRiftSerializable
         e.Writer.Write(entityType);
         e.Writer.Write(entityID);
     }
-
 }
+
+public struct EntityDestroyData : IDarkRiftSerializable
+{
+    public uint entityID;
+
+    public void Deserialize(DeserializeEvent e)
+    {
+        entityID = e.Reader.ReadUInt32();
+    }
+
+    public void Serialize(SerializeEvent e)
+    {
+        e.Writer.Write(entityID);
+    }
+}
+
 
 /// <summary>
 /// Sent From Server to client indicating the scene to load and the server instanceID associated with it

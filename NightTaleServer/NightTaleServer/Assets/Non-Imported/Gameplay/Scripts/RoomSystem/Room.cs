@@ -1,5 +1,6 @@
 ﻿using DarkRift;
 using FYP.Server.Player;
+using FYP.Shared;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -35,6 +36,12 @@ namespace FYP.Server.RoomManagement
 
 
         private uint nextEntityID = 0;
+
+
+        public LocalityOfRelevance[,,] GetAllLORs() 
+        {
+            return localityOfRelevances;
+        }
 
         private uint GetNextEntityID() 
         {
@@ -128,15 +135,6 @@ namespace FYP.Server.RoomManagement
                 }
             }
         }
-
-        private void FixedUpdate()
-        {
-            foreach (var lor in localityOfRelevances)
-            {
-
-            }
-        }
-
 
         public void SendMessageToEntireRoom(Message message, SendMode sendMode)
         {

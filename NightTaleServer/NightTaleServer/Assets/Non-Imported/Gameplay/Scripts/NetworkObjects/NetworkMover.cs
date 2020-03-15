@@ -2,54 +2,88 @@
 using FYP.Server.Player;
 using FYP.Shared;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace FYP.Server
 {
     [RequireComponent(typeof(ServerNetworkEntity))]
-    public class NetworkMover : MonoBehaviour
+    public class NetworkMover : MonoBehaviour, IServerWritable
     {
+        [Tooltip("The minimum distance to be moved for server to send data to clients")]
         [SerializeField]
-        private float initialSpeed = 5f;
+        private float positionalThreshold = 0.02f;
 
-        public float speed { get; set; }
+        [Tooltip("The minimum rotation angle for server to send data to clients")]
+        [SerializeField]
+        private float rotationalThreshold = 2f;
+
 
         private ServerNetworkEntity networkEntity = null;
-        private MovementInputHandler messageHandler = null;
+
+
+        private bool _isDirty = false;
+        public bool isDirty 
+        { 
+            get => _isDirty;
+            private set 
+            {
+                if(_isDirty != value) 
+                {
+                    if (value)
+                    {
+                        networkEntity.outputWriter.RegisterOutputHandler(this);
+                    }
+                    else
+                    {
+                        networkEntity.outputWriter.UnregisterOutputHandler(this);
+                    }
+                    _isDirty = value;
+                }
+            } 
+        }
+
+        private Vector3 lastSentPos;
+        private Quaternion lastSentRot;
+
 
         private void Awake()
         {
-            speed = initialSpeed;
             networkEntity = GetComponent<ServerNetworkEntity>();
-            networkEntity.OnOwnerAssigned += RegisterListeners;
-            networkEntity.OnOwnerRemoved += RemoveListeners;
-        }
-        private void RegisterListeners()
-        {
-            messageHandler = networkEntity.owner.inputController.GetMessageHandler<MovementInputHandler>((ushort)ClientDataTags.MoveObject);
-            messageHandler.RegisterMover(networkEntity.entityID, this);
         }
 
-        public void ReadDataFromReader(DarkRiftReader reader) 
+        //Input Listener
+        public void WriteUpdateDataToWriter(DarkRiftWriter writer)
         {
-            var data = reader.ReadSerializable<MovementData>();
-            networkEntity.rotation = data.rotation;
-            var maxDir = Mathf.Max(data.movementVector.x, data.movementVector.y, data.movementVector.z);
-            if(maxDir > 1f) 
+            writer.Write(new ServerUpdateTag(ServerUpdateTags.PositionalData));
+            writer.Write(new TransformData() {position = networkEntity.position,rotation = networkEntity.rotation });
+        }
+
+
+        private void FixedUpdate()
+        {
+            var dPos = (networkEntity.position - lastSentPos).magnitude;
+            var dRot = Quaternion.Angle(lastSentRot, networkEntity.rotation);
+            if(dPos > positionalThreshold || dRot > rotationalThreshold) 
             {
-                data.movementVector /= maxDir;
+                isDirty = true;
             }
-            networkEntity.position += data.movementVector * speed * Time.fixedDeltaTime;
         }
 
-
-        private void RemoveListeners(ServerPlayer obj)
+        public void WriteStateDataToWriter(DarkRiftWriter writer)
         {
-            messageHandler.UnregisterMover(networkEntity.entityID);
-            messageHandler = null;
+            //Update synchronizes state no need to write again
         }
 
+        public void ResetUpdateData()
+        {
+            lastSentPos = networkEntity.position;
+            lastSentRot = networkEntity.rotation;
+            isDirty = false;
+        }
+
+        public void OnDestroy()
+        {
+            networkEntity.outputWriter.UnregisterOutputHandler(this);
+        }
     }
 }

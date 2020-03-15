@@ -1,4 +1,5 @@
 ﻿using DarkRift;
+using FYP.Shared;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,13 +10,13 @@ namespace FYP.Server.Player
     {
         [SerializeField]
         private PlayerInputController playerInputController = null;
-        public abstract void HandlePlayerInputFromReader(DarkRiftReader reader);
+        public abstract void HandlePlayerInputFromReader(DarkRiftReader reader,ClientDataTags tag);
 
-        protected void RegisterHandlerForTag(ushort tag) 
+        protected void RegisterHandlerForTag(ClientDataTags tag) 
         {
             playerInputController.RegisterInputHandler(this, tag);
         }
-        protected void UnregisterHandlerForTag(ushort tag) 
+        protected void UnregisterHandlerForTag(ClientDataTags tag) 
         {
             playerInputController.UnregisterInputHandler(this, tag);
         }

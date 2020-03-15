@@ -9,7 +9,7 @@ namespace FYP.Server.RoomManagement
     public class LocalityOfRelevance
     {
         private readonly HashSet<IClient> players = new HashSet<IClient>();
-        private readonly HashSet<ServerNetworkEntity> objects = new HashSet<ServerNetworkEntity>();
+        public readonly HashSet<ServerNetworkEntity> objects = new HashSet<ServerNetworkEntity>();
         public readonly List<LocalityOfRelevance> adjacentLoRs = new List<LocalityOfRelevance>();
 
         public readonly Bounds bounds;
@@ -74,14 +74,11 @@ namespace FYP.Server.RoomManagement
             }
         }
 
-        public void SendMessageToVisibleClients(Message message,SendMode sendMode) 
+        public void SendMessageToClientsInLOR(Message message,SendMode sendMode) 
         {
-            foreach (var lor in adjacentLoRs)
+            foreach (var playerClient in players)
             {
-                foreach (var playerClient in lor.GetPlayerClients())
-                {
-                    playerClient.SendMessage(message, sendMode);
-                }
+                playerClient.SendMessage(message, sendMode);
             }
         }
     }

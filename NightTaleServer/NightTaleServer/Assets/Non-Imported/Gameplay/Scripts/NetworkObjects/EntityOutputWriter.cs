@@ -14,20 +14,39 @@ namespace FYP.Server
         {
             entity = GetComponent<ServerNetworkEntity>();
         }
-        public void RegisterInputHandler(IServerWritable outputHandler)
+        public void RegisterOutputHandler(IServerWritable outputHandler)
         {
             writables.Add(outputHandler);
         }
 
-        public void WriteDataToWriter(DarkRiftWriter writer) 
+        public void WriteUpdateDataToWriter(DarkRiftWriter writer) 
+        {
+            if (writables.Count >0) 
+            {
+                writer.Write(new ServerUpdateData() { entityID = entity.entityID, dataCount = (ushort)writables.Count });
+                foreach (var writable in writables)
+                {
+                    writable.WriteUpdateDataToWriter(writer);
+                }
+            }
+        }
+        public void WriteStateDataToWriter(DarkRiftWriter writer) 
         {
             foreach (var writable in writables)
             {
-                writable.WriteUpdateDataToWriter(writer);
+                writable.WriteStateDataToWriter(writer);
             }
         }
 
-        public void UnregisterInputHandler(IServerWritable outputHandler)
+        public void ResetUpdateData() 
+        {
+            foreach (var writable in writables)
+            {
+                writable.ResetUpdateData();
+            }
+        }
+
+        public void UnregisterOutputHandler(IServerWritable outputHandler)
         {
             writables.Remove(outputHandler);
         }

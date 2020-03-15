@@ -2,7 +2,28 @@
 using DarkriftSerializationExtensions;
 using UnityEngine;
 
-public struct MovementMessage : IDarkRiftSerializable
+
+
+/// <summary>
+/// Client Update Data sent every tick
+/// </summary>
+public struct ClientUpdateData : IDarkRiftSerializable
+{
+    /// <summary>
+    /// Tag used to identify the kind of update, every message here is required to identify its entity
+    /// </summary>
+    public ushort tag;
+    public void Deserialize(DeserializeEvent e)
+    {
+        tag = e.Reader.ReadUInt16();
+    }
+
+    public void Serialize(SerializeEvent e)
+    {
+        e.Writer.Write(tag);
+    }
+}
+public struct EntityID : IDarkRiftSerializable
 {
     public uint entID;
     public void Deserialize(DeserializeEvent e)

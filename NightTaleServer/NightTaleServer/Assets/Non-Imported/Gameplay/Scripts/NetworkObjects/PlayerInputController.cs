@@ -13,9 +13,9 @@ namespace FYP.Server
     {
         public PlayerEntity player { get; private set; }
 
-        private readonly Dictionary<ushort, IServerReadable> inputHandlerLookup = new Dictionary<ushort, IServerReadable>();
+        private readonly Dictionary<ClientDataTags, IServerReadable> inputHandlerLookup = new Dictionary<ClientDataTags, IServerReadable>();
 
-        public T GetMessageHandler<T>(ushort tag) where T:MonoBehaviour,IServerReadable
+        public T GetMessageHandler<T>(ClientDataTags tag) where T:MonoBehaviour,IServerReadable
         {
             if (inputHandlerLookup.ContainsKey(tag)) 
             {
@@ -46,10 +46,10 @@ namespace FYP.Server
                     {
                         while (reader.Position <= reader.Length) 
                         {
-                            var updateData = reader.ReadSerializable<UpdateData>();
-                            if(inputHandlerLookup.TryGetValue(updateData.tag,out var handler)) 
+                            var updateData = reader.ReadSerializable<ClientUpdateData>();
+                            if(inputHandlerLookup.TryGetValue((ClientDataTags)updateData.tag,out var handler)) 
                             {
-                                handler.HandlePlayerInputFromReader(reader);
+                                handler.HandlePlayerInputFromReader(reader, (ClientDataTags)updateData.tag);
                             }
                             else 
                             {
@@ -62,7 +62,7 @@ namespace FYP.Server
             }
         }
 
-        public void RegisterInputHandler(IServerReadable inputHandler,ushort tag) 
+        public void RegisterInputHandler(IServerReadable inputHandler,ClientDataTags tag) 
         {
             if (inputHandler != null) 
             {
@@ -70,7 +70,7 @@ namespace FYP.Server
             }
         }
 
-        public void UnregisterInputHandler(IServerReadable inputHandler,ushort tag) 
+        public void UnregisterInputHandler(IServerReadable inputHandler, ClientDataTags tag) 
         {
             if(inputHandlerLookup.TryGetValue(tag,out var handler)) 
             {

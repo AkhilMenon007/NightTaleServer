@@ -14,8 +14,9 @@ namespace FYP.Server.Player
         public ServerPlayer player { get; private set; }
         public bool vrEnabled { get; private set; }
         private RoomManager roomManager => RoomManager.instance;
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             player = GetComponent<ServerPlayer>();
             player.OnInitialize += SetInitialData;
         }
@@ -30,7 +31,7 @@ namespace FYP.Server.Player
             client.MessageReceived += RoomDataRequestCallback;
             client.MessageReceived += JoinLastRoomRequestCallback;
         }
-        public override void WriteDataToWriter(DarkRiftWriter writer)
+        public override void WriteNewEntityDataToWriter(DarkRiftWriter writer)
         {
             writer.Write(new NewPlayerData()
             {
@@ -54,16 +55,6 @@ namespace FYP.Server.Player
         }
         private void PlayerJoinedRoomCallback(Room obj)
         {
-            //Send data about player to others
-            using (var writer = DarkRiftWriter.Create())
-            {
-                writer.Write(new EntityData() { entityID = entityID, entityType = entityType });
-                WriteDataToWriter(writer);
-                using (var message = Message.Create((ushort)ServerTags.EntitySpawned, writer))
-                {
-                    room.SendMessageToEntireRoomExceptPlayer(this, message, SendMode.Reliable);
-                }
-            }
             //Send room intialize message to player
             using (var writer = DarkRiftWriter.Create())
             {
@@ -96,8 +87,9 @@ namespace FYP.Server.Player
                         writer.Write(new RoomData() { roomInstanceID = room.instanceID,templateID = room.roomTemplate.templateID });
                         foreach (var entity in roomManager.GetRoom(room.instanceID).networkEntities.Values)
                         {
-                            writer.Write(new EntityData() { entityID = entity.entityID, entityType = entity.entityType });
-                            entity.WriteDataToWriter(writer);
+                            writer.Write(new EntityCreationData() { entityID = entity.entityID, entityType = entity.entityType });
+                            entity.WriteNewEntityDataToWriter(writer);
+                            entity.outputWriter.WriteStateDataToWriter(writer);
                         }
                         using (var reply = Message.Create((ushort)ServerTags.RoomData, writer))
                         {

@@ -14,7 +14,7 @@ namespace FYP.Server.Player
 
         private PlayerInputController inputController = null;
 
-        private Dictionary<uint, NetworkMover> movers = new Dictionary<uint, NetworkMover>();
+        private Dictionary<uint, ClientControlledMover> movers = new Dictionary<uint, ClientControlledMover>();
         private void Awake()
         {
             networkEntity.OnOwnerAssigned += AddListeners;
@@ -24,7 +24,8 @@ namespace FYP.Server.Player
         private void AddListeners()
         {
             inputController = networkEntity.owner.inputController;
-            inputController.RegisterInputHandler(this, (ushort)ClientDataTags.MoveObject);
+            inputController.RegisterInputHandler(this, ClientDataTags.MoveObject);
+            inputController.RegisterInputHandler(this, ClientDataTags.SetObjectPosition);
         }
 
         public void UnregisterMover(uint entityID)
@@ -32,7 +33,7 @@ namespace FYP.Server.Player
             movers.Remove(entityID);
         }
 
-        public void RegisterMover(uint entityID,NetworkMover mover) 
+        public void RegisterMover(uint entityID, ClientControlledMover mover) 
         {
             if (mover != null) 
             {
@@ -40,12 +41,12 @@ namespace FYP.Server.Player
             }
         }
 
-        public override void HandlePlayerInputFromReader(DarkRiftReader reader)
+        public override void HandlePlayerInputFromReader(DarkRiftReader reader,ClientDataTags tag)
         {
-            var data = reader.ReadSerializable<MovementMessage>();
+            var data = reader.ReadSerializable<EntityID>();
             if(movers.TryGetValue(data.entID,out var mover)) 
             {
-                mover.ReadDataFromReader(reader);
+                mover.ReadTranslationDataFromReader(reader,tag);
             }
             else 
             {
@@ -58,7 +59,8 @@ namespace FYP.Server.Player
 
         private void RemoveListener(ServerPlayer obj)
         {
-            inputController.UnregisterInputHandler(this, (ushort)ClientDataTags.MoveObject);
+            inputController.UnregisterInputHandler(this,ClientDataTags.MoveObject);
+            inputController.UnregisterInputHandler(this, ClientDataTags.SetObjectPosition);
             inputController = null;
         }
 
