@@ -12,7 +12,7 @@ namespace FYP.Server.Player
     public class PlayerEntity : ServerNetworkEntity
     {
         public ServerPlayer player { get; private set; }
-        public bool vrEnabled { get; private set; }
+        public bool vrEnabled { get; private set; } = false;
         private RoomManager roomManager => RoomManager.instance;
         protected override void Awake()
         {
@@ -69,10 +69,10 @@ namespace FYP.Server.Player
         {
             using(var writer = DarkRiftWriter.Create()) 
             {
-                writer.Write(new RoomLeftMessage() { clientID = player.client.ID , roomID = obj.instanceID});
+                writer.Write(new RoomLeftMessage() { roomID = obj.instanceID});
                 using(var message = Message.Create((ushort)ServerTags.LeftRoom, writer)) 
                 {
-                    room.SendMessageToEntireRoom(message, SendMode.Reliable);
+                    player.client.SendMessage(message, SendMode.Reliable);
                 }
             }
         }
@@ -80,21 +80,25 @@ namespace FYP.Server.Player
         {
             if(e.Tag == (ushort)ClientTags.RoomDataRequest) 
             {
-                using(var message = e.GetMessage()) 
+                using (var writer = DarkRiftWriter.Create())
                 {
-                    using (var writer = DarkRiftWriter.Create())
+                    writer.Write(new RoomData() { roomInstanceID = room.instanceID,templateID = room.roomTemplate.templateID });
+                    foreach (var entity in roomManager.GetRoom(room.instanceID).networkEntities.Values)
                     {
-                        writer.Write(new RoomData() { roomInstanceID = room.instanceID,templateID = room.roomTemplate.templateID });
-                        foreach (var entity in roomManager.GetRoom(room.instanceID).networkEntities.Values)
+                        if (entity.serverOwned) 
                         {
-                            writer.Write(new EntityCreationData() { entityID = entity.entityID, entityType = entity.entityType });
-                            entity.WriteNewEntityDataToWriter(writer);
-                            entity.outputWriter.WriteStateDataToWriter(writer);
+                            writer.Write(new EntityCreationData() { entityID = entity.entityID, entityType = entity.entityType, serverOwned = true });
                         }
-                        using (var reply = Message.Create((ushort)ServerTags.RoomData, writer))
+                        else 
                         {
-                            player.client.SendMessage(reply, SendMode.Reliable);
+                            writer.Write(new EntityCreationData() { entityID = entity.entityID, entityType = entity.entityType, serverOwned = false ,ownerID = entity.owner.client.ID});
                         }
+                        entity.WriteNewEntityDataToWriter(writer);
+                        entity.outputWriter.WriteStateDataToWriter(writer);
+                    }
+                    using (var reply = Message.Create((ushort)ServerTags.RoomData, writer))
+                    {
+                        player.client.SendMessage(reply, SendMode.Reliable);
                     }
                 }
             }
@@ -117,7 +121,9 @@ namespace FYP.Server.Player
         }
         private void DeletePlayer()
         {
+            roomManager.LeaveRoom(this, room);
             RemoveOwner();
+
             player.OnDataSave -= SavePlayerData;
             player.OnDelete -= DeletePlayer;
             OnEnteredRoom -= PlayerJoinedRoomCallback;
@@ -126,7 +132,6 @@ namespace FYP.Server.Player
             player.client.MessageReceived -= JoinLastRoomRequestCallback;
 
 
-            roomManager.LeaveRoom(this,room);
         }
         private void SavePlayerData(ConnectedPlayer obj)
         {

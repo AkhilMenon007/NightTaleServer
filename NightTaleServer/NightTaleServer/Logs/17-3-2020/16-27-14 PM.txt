@@ -1,0 +1,33 @@
+[Trace]   DarkRiftServer        System Details:
+                                	OS: Microsoft Windows NT 10.0.18363.0
+                                	CLS Version: 4.0.30319.42000
+                                	DarkRift: 2.5.0.0 - Free
+[Trace]   PluginFactory         Created plugin 'CompatibilityBichannelListener'.
+[Trace]   DefaultNetworkListener Starting compatibility listener.
+[Info]    DefaultNetworkListener Server mounted, listening on port 4296.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:44649.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:52781.
+[Info]    ClientManager         New client [0] connected [127.0.0.1:44649|127.0.0.1:52781].
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:44653.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:52782.
+[Info]    ClientManager         New client [1] connected [127.0.0.1:44653|127.0.0.1:52782].
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:45087.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:63234.
+[Info]    ClientManager         New client [2] connected [127.0.0.1:45087|127.0.0.1:63234].
+[Error]   ClientManager         An plugin encountered an error whilst handling the ClientDisconnected event. (See logs for exception)
+                                 System.NullReferenceException: Object reference not set to an instance of an object
+                                   at FYP.Server.PlayerControllableEntity.RemoveListeners (FYP.Server.RoomManagement.Room room) [0x00001] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\NetworkObjects\PlayerControllableEntity.cs:60 
+                                   at (wrapper delegate-invoke) System.Action`1[FYP.Server.RoomManagement.Room].invoke_void_T(FYP.Server.RoomManagement.Room)
+                                   at FYP.Server.RoomManagement.Room.DestroyObject (FYP.Server.ServerNetworkEntity objectToRemove) [0x00001] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\RoomSystem\Room.cs:108 
+                                   at FYP.Server.RoomManagement.Room.RemovePlayer (FYP.Server.Player.PlayerEntity player) [0x00001] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\RoomSystem\Room.cs:82 
+                                   at FYP.Server.RoomManagement.RoomManager.LeaveRoom (FYP.Server.Player.PlayerEntity player, FYP.Server.RoomManagement.Room room) [0x00001] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\RoomSystem\RoomManager.cs:163 
+                                   at FYP.Server.Player.PlayerEntity.DeletePlayer () [0x00008] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\NetworkObjects\PlayerEntity.cs:129 
+                                   at (wrapper delegate-invoke) <Module>.invoke_void()
+                                   at FYP.Server.Player.ServerPlayer.Delete () [0x00008] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\NetworkObjects\ServerPlayer.cs:45 
+                                   at FYP.Server.Player.PlayerManager.ClientLoggedOut (DarkRift.Server.IClient obj) [0x00014] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\NetworkObjects\PlayerManager.cs:81 
+                                   at PlayerSessionManager.LogoutClient (DarkRift.Server.IClient client, System.String charID) [0x00001] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Client\ClientManagement\PlayerSessionManager.cs:134 
+                                   at PlayerSessionManager.LogoutClient (DarkRift.Server.IClient client) [0x00014] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Client\ClientManagement\PlayerSessionManager.cs:128 
+                                   at PlayerSessionManager.UnRegisterClient (System.Object sender, DarkRift.Server.ClientDisconnectedEventArgs e) [0x0002f] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Client\ClientManagement\PlayerSessionManager.cs:78 
+                                   at (wrapper delegate-invoke) System.EventHandler`1[DarkRift.Server.ClientDisconnectedEventArgs].invoke_void_object_TEventArgs(object,DarkRift.Server.ClientDisconnectedEventArgs)
+                                   at DarkRift.Server.ClientManager+<>c__DisplayClass32_0.<HandleDisconnection>b__0 () [0x0002b] in <62ef1c031a10437d9cba70b183da538b>:0 
+[Info]    ClientManager         Client [2] disconnected.

@@ -48,15 +48,14 @@ public struct RoomData : IDarkRiftSerializable
 
 public struct RoomLeftMessage : IDarkRiftSerializable
 {
-    public ushort clientID;
     public uint roomID;
     public void Deserialize(DeserializeEvent e)
     {
-        clientID = e.Reader.ReadUInt16();
+        roomID = e.Reader.ReadUInt32();
     }
 
     public void Serialize(SerializeEvent e)
     {
-        e.Writer.Write(clientID);
+        e.Writer.Write(roomID);
     }
 }

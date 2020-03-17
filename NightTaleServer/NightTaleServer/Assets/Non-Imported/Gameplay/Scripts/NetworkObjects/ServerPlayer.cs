@@ -13,10 +13,9 @@ namespace FYP.Server.Player
     {
         public ConnectedPlayer playerData { get; private set; }
         public PlayerInputController inputController { get; private set; }
-        public PlayerOutputController outputController { get; private set; }
         public IClient client { get; private set; }
         public string charID { get; private set; }
-        public PlayerEntity playerTransform { get; private set; } = null;
+        public PlayerEntity playerEntity { get; private set; } = null;
         public Action<ConnectedPlayer, IClient> OnInitialize { get; set; }
         public Action<ConnectedPlayer> OnDataSave { get; set; }
         public Action OnDelete{ get; set; }
@@ -24,9 +23,8 @@ namespace FYP.Server.Player
 
         private void Awake()
         {
-            playerTransform = GetComponent<PlayerEntity>();
+            playerEntity = GetComponent<PlayerEntity>();
             inputController = GetComponent<PlayerInputController>();
-            outputController = GetComponent<PlayerOutputController>();
         }
         public void Initialize(ConnectedPlayer playerData,IClient client) 
         {
@@ -43,8 +41,8 @@ namespace FYP.Server.Player
         }
         public void Delete() 
         {
-            OnDelete?.Invoke();
             Save();
+            OnDelete?.Invoke();
             Destroy(gameObject);
         }
     }

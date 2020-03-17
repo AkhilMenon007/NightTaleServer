@@ -17,6 +17,11 @@ namespace FYP.Server.RoomManagement
         public readonly int[] index;
         public readonly Room room;
 
+        public HashSet<IClient> GetPlayers() 
+        {
+            return players;
+        }
+
         public LocalityOfRelevance(Room room,Bounds bounds,int x,int y,int z)
         {
             this.room = room;
@@ -55,7 +60,7 @@ namespace FYP.Server.RoomManagement
                 obj.lor = null;
             }
         }
-        public void TransferPlayer(PlayerEntity player,LocalityOfRelevance target) 
+        private void TransferPlayer(PlayerEntity player,LocalityOfRelevance target) 
         {
             target?.AddPlayer(player);
             RemovePlayer(player);
@@ -65,7 +70,6 @@ namespace FYP.Server.RoomManagement
             if(obj is PlayerEntity player) 
             {
                 TransferPlayer(player, target);
-                return;
             }
             else 
             {

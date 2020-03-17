@@ -1,0 +1,28 @@
+[Trace]   DarkRiftServer        System Details:
+                                	OS: Microsoft Windows NT 10.0.18363.0
+                                	CLS Version: 4.0.30319.42000
+                                	DarkRift: 2.5.0.0 - Free
+[Trace]   PluginFactory         Created plugin 'CompatibilityBichannelListener'.
+[Trace]   DefaultNetworkListener Starting compatibility listener.
+[Info]    DefaultNetworkListener Server mounted, listening on port 4296.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:18411.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:63762.
+[Info]    ClientManager         New client [0] connected [127.0.0.1:18411|127.0.0.1:63762].
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:18414.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:63763.
+[Info]    ClientManager         New client [1] connected [127.0.0.1:18414|127.0.0.1:63763].
+[Info]    ClientManager         Client [0] disconnected.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:19634.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:54455.
+[Info]    ClientManager         New client [2] connected [127.0.0.1:19634|127.0.0.1:54455].
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:20123.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:52163.
+[Info]    ClientManager         New client [3] connected [127.0.0.1:20123|127.0.0.1:52163].
+[Warning] ObjectCacheMonitor    25 AutoRecyclingArray objects were finalized last period. This is usually a sign that you are not recycling objects correctly.
+[Warning] ObjectCacheMonitor    32 MessageBuffer objects were finalized last period. This is usually a sign that you are not recycling objects correctly.
+[Warning] ObjectCacheMonitor    26 AutoRecyclingArray objects were finalized last period. This is usually a sign that you are not recycling objects correctly.
+[Warning] ObjectCacheMonitor    26 MessageBuffer objects were finalized last period. This is usually a sign that you are not recycling objects correctly.
+[Warning] ObjectCacheMonitor    41 AutoRecyclingArray objects were finalized last period. This is usually a sign that you are not recycling objects correctly.
+[Warning] ObjectCacheMonitor    43 MessageBuffer objects were finalized last period. This is usually a sign that you are not recycling objects correctly.
+[Warning] ObjectCacheMonitor    1 AutoRecyclingArray objects were finalized last period. This is usually a sign that you are not recycling objects correctly.
+[Info]    ClientManager         Client [3] disconnected.

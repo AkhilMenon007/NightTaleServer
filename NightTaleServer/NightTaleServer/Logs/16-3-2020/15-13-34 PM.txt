@@ -1,0 +1,23 @@
+[Trace]   DarkRiftServer        System Details:
+                                	OS: Microsoft Windows NT 10.0.18363.0
+                                	CLS Version: 4.0.30319.42000
+                                	DarkRift: 2.5.0.0 - Free
+[Trace]   PluginFactory         Created plugin 'CompatibilityBichannelListener'.
+[Trace]   DefaultNetworkListener Starting compatibility listener.
+[Info]    DefaultNetworkListener Server mounted, listening on port 4296.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:13046.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:63188.
+[Info]    ClientManager         New client [0] connected [127.0.0.1:13046|127.0.0.1:63188].
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:13055.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:55807.
+[Info]    ClientManager         New client [1] connected [127.0.0.1:13055|127.0.0.1:55807].
+[Error]   Client                An plugin encountered an error whilst handling the MessageReceived event.
+                                 UnityEngine.MissingReferenceException: The variable playerPrefab of PlayerManager doesn't exist anymore.
+                                 You probably need to reassign the playerPrefab variable of the 'PlayerManager' script in the inspector.
+                                   at (wrapper managed-to-native) UnityEngine.Object.Internal_CloneSingle(UnityEngine.Object)
+                                   at UnityEngine.Object.Instantiate[T] (T original) [0x00012] in <94c5f4c38cdc42d2b006f8badef04394>:0 
+                                   at FYP.Server.Player.PlayerManager.ClientLoggedIn (DarkRift.Server.IClient obj) [0x00057] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\NetworkObjects\PlayerManager.cs:59 
+                                   at PlayerSessionManager.LoginClient (DarkRift.Server.IClient client, System.String charID) [0x00088] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Client\ClientManagement\PlayerSessionManager.cs:185 
+                                   at PlayerSessionManager.ClientAuthRequest (System.Object sender, DarkRift.Server.MessageReceivedEventArgs e) [0x00056] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Client\ClientManagement\PlayerSessionManager.cs:209 
+                                   at (wrapper delegate-invoke) System.EventHandler`1[DarkRift.Server.MessageReceivedEventArgs].invoke_void_object_TEventArgs(object,DarkRift.Server.MessageReceivedEventArgs)
+                                   at DarkRift.Server.Client+<>c__DisplayClass43_0.<HandleIncomingMessage>b__0 () [0x00011] in <62ef1c031a10437d9cba70b183da538b>:0 

@@ -106,7 +106,14 @@ namespace FYP.Server.RoomManagement
         public void DestroyObject(ServerNetworkEntity objectToRemove)
         {
             objectToRemove.OnLeftRoom?.Invoke(this);
-            objectToRemove.lor?.RemoveObject(objectToRemove);
+            if(objectToRemove is PlayerEntity player) 
+            {
+                objectToRemove.lor?.RemovePlayer(player);
+            }
+            else 
+            {
+                objectToRemove.lor?.RemoveObject(objectToRemove);
+            }
             networkEntities.Remove(objectToRemove.entityID);
         }
         
@@ -136,23 +143,8 @@ namespace FYP.Server.RoomManagement
             }
         }
 
-        public void SendMessageToEntireRoom(Message message, SendMode sendMode)
-        {
-            foreach (var player in players)
-            {
-                player.player.client.SendMessage(message, sendMode);
-            }
-        }
-        public void SendMessageToEntireRoomExceptPlayer(PlayerEntity sender,Message message, SendMode sendMode)
-        {
-            foreach (var player in players)
-            {
-                if (sender != player)
-                {
-                    player.player.client.SendMessage(message, sendMode);
-                }
-            }
-        }
+
+
 
         #region Populate LOR
 
@@ -199,10 +191,10 @@ namespace FYP.Server.RoomManagement
                                 for (int k = -1; k <= 1; k++)
                                 {
                                     if (x + i >= 0 && x + i < roomTemplate.lorCountX
-                                        && y + i >= 0 && y + i < roomTemplate.lorCountY
-                                        && z + i >= 0 && z + i < roomTemplate.lorCountZ)
+                                        && y + j >= 0 && y + j < roomTemplate.lorCountY
+                                        && z + k >= 0 && z + k < roomTemplate.lorCountZ)
                                     {
-                                        localityOfRelevances[x, y, z].adjacentLoRs.Add(localityOfRelevances[x + i, y + i, z + i]);
+                                        localityOfRelevances[x, y, z].adjacentLoRs.Add(localityOfRelevances[x + i, y + j, z + k]);
                                     }
                                 }
                             }

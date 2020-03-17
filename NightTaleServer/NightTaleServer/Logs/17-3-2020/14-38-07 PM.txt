@@ -1,0 +1,25 @@
+[Trace]   DarkRiftServer        System Details:
+                                	OS: Microsoft Windows NT 10.0.18363.0
+                                	CLS Version: 4.0.30319.42000
+                                	DarkRift: 2.5.0.0 - Free
+[Trace]   PluginFactory         Created plugin 'CompatibilityBichannelListener'.
+[Trace]   DefaultNetworkListener Starting compatibility listener.
+[Info]    DefaultNetworkListener Server mounted, listening on port 4296.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:41058.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:56753.
+[Info]    ClientManager         New client [0] connected [127.0.0.1:41058|127.0.0.1:56753].
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:41061.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:56754.
+[Info]    ClientManager         New client [1] connected [127.0.0.1:41061|127.0.0.1:56754].
+[Error]   Client                An plugin encountered an error whilst handling the MessageReceived event.
+                                 System.NullReferenceException: Object reference not set to an instance of an object
+                                   at FYP.Server.ServerNetworkEntity.SendRoomJoinedMessageToOthers (FYP.Server.RoomManagement.Room room) [0x00008] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\NetworkObjects\ServerNetworkEntity.cs:68 
+                                   at (wrapper delegate-invoke) System.Action`1[FYP.Server.RoomManagement.Room].invoke_void_T(FYP.Server.RoomManagement.Room)
+                                   at FYP.Server.RoomManagement.Room.SpawnObject (FYP.Server.ServerNetworkEntity objectToSpawn) [0x0007c] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\RoomSystem\Room.cs:104 
+                                   at FYP.Server.RoomManagement.Room.AddPlayer (FYP.Server.Player.PlayerEntity player) [0x00039] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\RoomSystem\Room.cs:72 
+                                   at FYP.Server.RoomManagement.RoomManager.AddPlayerToRoom (FYP.Server.Player.PlayerEntity player, FYP.Server.RoomManagement.RoomTemplate room, System.UInt32 roomID) [0x0001b] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\RoomSystem\RoomManager.cs:171 
+                                   at FYP.Server.RoomManagement.RoomManager.EnterRoom (FYP.Server.Player.PlayerEntity player, System.UInt16 templateID, System.UInt32 roomID) [0x00009] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\RoomSystem\RoomManager.cs:131 
+                                   at FYP.Server.Player.PlayerEntity.JoinLastRoom (ConnectedPlayer data) [0x00019] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\NetworkObjects\PlayerEntity.cs:115 
+                                   at FYP.Server.Player.PlayerEntity.JoinLastRoomRequestCallback (System.Object sender, DarkRift.Server.MessageReceivedEventArgs e) [0x0002c] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\NetworkObjects\PlayerEntity.cs:52 
+                                   at (wrapper delegate-invoke) System.EventHandler`1[DarkRift.Server.MessageReceivedEventArgs].invoke_void_object_TEventArgs(object,DarkRift.Server.MessageReceivedEventArgs)
+                                   at DarkRift.Server.Client+<>c__DisplayClass43_0.<HandleIncomingMessage>b__0 () [0x00011] in <62ef1c031a10437d9cba70b183da538b>:0 

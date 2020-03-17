@@ -20,6 +20,7 @@ namespace FYP.Server.RoomManagement
             {
                 using (var writer = DarkRiftWriter.Create())
                 {
+
                     foreach (var adjLor in lor.adjacentLoRs)
                     {
                         foreach (var item in adjLor.objects)
@@ -27,9 +28,15 @@ namespace FYP.Server.RoomManagement
                             item.outputWriter.WriteUpdateDataToWriter(writer);
                         }
                     }
-                    using (var message = Message.Create((ushort)ServerTags.UpdateData, writer))
+                    if (writer.Length != 0) 
                     {
-                        lor.SendMessageToClientsInLOR(message, SendMode.Unreliable);
+                        using (var message = Message.Create((ushort)ServerTags.UpdateData, writer))
+                        {
+                            foreach (var player in lor.GetPlayerClients())
+                            {
+                                player.SendMessage(message, SendMode.Unreliable);
+                            }
+                        }
                     }
                 }
             }

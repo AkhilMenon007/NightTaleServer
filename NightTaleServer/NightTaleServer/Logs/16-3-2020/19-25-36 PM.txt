@@ -1,0 +1,44 @@
+[Trace]   DarkRiftServer        System Details:
+                                	OS: Microsoft Windows NT 10.0.18363.0
+                                	CLS Version: 4.0.30319.42000
+                                	DarkRift: 2.5.0.0 - Free
+[Trace]   PluginFactory         Created plugin 'CompatibilityBichannelListener'.
+[Trace]   DefaultNetworkListener Starting compatibility listener.
+[Info]    DefaultNetworkListener Server mounted, listening on port 4296.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:20486.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:49919.
+[Info]    ClientManager         New client [0] connected [127.0.0.1:20486|127.0.0.1:49919].
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:20489.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:49920.
+[Info]    ClientManager         New client [1] connected [127.0.0.1:20489|127.0.0.1:49920].
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:20595.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:55210.
+[Info]    ClientManager         New client [2] connected [127.0.0.1:20595|127.0.0.1:55210].
+[Info]    ClientManager         Client [0] disconnected.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:20653.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:52698.
+[Info]    ClientManager         New client [3] connected [127.0.0.1:20653|127.0.0.1:52698].
+[Info]    ClientManager         Client [3] disconnected.
+[Warning] ObjectCacheMonitor    1 MessageBuffer objects were finalized last period. This is usually a sign that you are not recycling objects correctly.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:20669.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:63224.
+[Info]    ClientManager         New client [4] connected [127.0.0.1:20669|127.0.0.1:63224].
+[Warning] ObjectCacheMonitor    1 MessageBuffer objects were finalized last period. This is usually a sign that you are not recycling objects correctly.
+[Info]    ClientManager         Client [2] disconnected.
+[Warning] ObjectCacheMonitor    16 AutoRecyclingArray objects were finalized last period. This is usually a sign that you are not recycling objects correctly.
+[Warning] ObjectCacheMonitor    19 MessageBuffer objects were finalized last period. This is usually a sign that you are not recycling objects correctly.
+[Info]    ClientManager         Client [4] disconnected.
+[Warning] ObjectCacheMonitor    1 AutoRecyclingArray objects were finalized last period. This is usually a sign that you are not recycling objects correctly.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:20771.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:59502.
+[Info]    ClientManager         New client [5] connected [127.0.0.1:20771|127.0.0.1:59502].
+[Warning] ObjectCacheMonitor    3 AutoRecyclingArray objects were finalized last period. This is usually a sign that you are not recycling objects correctly.
+[Warning] ObjectCacheMonitor    4 MessageBuffer objects were finalized last period. This is usually a sign that you are not recycling objects correctly.
+[Warning] ObjectCacheMonitor    1 AutoRecyclingArray objects were finalized last period. This is usually a sign that you are not recycling objects correctly.
+[Info]    ClientManager         Client [5] disconnected.
+[Warning] ObjectCacheMonitor    2 AutoRecyclingArray objects were finalized last period. This is usually a sign that you are not recycling objects correctly.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:20942.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:64248.
+[Info]    ClientManager         New client [6] connected [127.0.0.1:20942|127.0.0.1:64248].
+[Warning] ObjectCacheMonitor    4 AutoRecyclingArray objects were finalized last period. This is usually a sign that you are not recycling objects correctly.
+[Warning] ObjectCacheMonitor    3 MessageBuffer objects were finalized last period. This is usually a sign that you are not recycling objects correctly.

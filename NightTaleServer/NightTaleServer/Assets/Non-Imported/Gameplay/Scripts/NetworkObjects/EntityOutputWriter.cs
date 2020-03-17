@@ -1,4 +1,5 @@
 ﻿using DarkRift;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace FYP.Server
         public ServerNetworkEntity entity { get; private set; } = null;
         private readonly HashSet<IServerWritable> writables = new HashSet<IServerWritable>();
 
+        public Action OnReset { get; set; }
         private void Awake()
         {
             entity = GetComponent<ServerNetworkEntity>();
@@ -23,11 +25,18 @@ namespace FYP.Server
         {
             if (writables.Count >0) 
             {
-                writer.Write(new ServerUpdateData() { entityID = entity.entityID, dataCount = (ushort)writables.Count });
+                //writer.Write(new ServerUpdateData() { entityID = entity.entityID, dataCount = (ushort)writables.Count });
+                writer.Write(entity.entityID);
+                var pos = writer.Reserve(sizeof(ushort));
+
                 foreach (var writable in writables)
                 {
                     writable.WriteUpdateDataToWriter(writer);
                 }
+                var curPos = writer.Position;
+                writer.Position = pos;
+                writer.Write((ushort)curPos);
+                writer.Position = curPos;
             }
         }
         public void WriteStateDataToWriter(DarkRiftWriter writer) 
@@ -40,10 +49,7 @@ namespace FYP.Server
 
         public void ResetUpdateData() 
         {
-            foreach (var writable in writables)
-            {
-                writable.ResetUpdateData();
-            }
+            OnReset?.Invoke();
         }
 
         public void UnregisterOutputHandler(IServerWritable outputHandler)

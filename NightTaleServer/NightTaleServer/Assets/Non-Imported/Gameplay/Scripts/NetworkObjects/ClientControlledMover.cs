@@ -1,5 +1,6 @@
 ﻿using DarkRift;
 using FYP.Server.Player;
+using FYP.Server.RoomManagement;
 using FYP.Shared;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,8 +8,8 @@ using UnityEngine;
 
 namespace FYP.Server
 {
-    [RequireComponent(typeof(ServerNetworkEntity))]
-    public class ClientControlledMover : MonoBehaviour
+    [RequireComponent(typeof(PlayerControllableEntity))]
+    public class ClientControlledMover : MonoBehaviour, IServerReadable
     {
 
         [SerializeField]
@@ -20,26 +21,25 @@ namespace FYP.Server
         public float speed { get; set; }
 
         private ServerNetworkEntity networkEntity = null;
-        private MovementInputHandler messageHandler = null;
-
+        private PlayerControllableEntity controller = null;
         private void Awake()
         {
             speed = initialSpeed;
             networkEntity = GetComponent<ServerNetworkEntity>();
+            controller = GetComponent<PlayerControllableEntity>();
 
 
-            networkEntity.OnOwnerAssigned += RegisterListeners;
-            networkEntity.OnOwnerRemoved += RemoveListeners;
+            networkEntity.OnEnteredRoom += RegisterListeners;
+            networkEntity.OnLeftRoom += RemoveListeners;
         }
-        private void RegisterListeners()
+        private void RegisterListeners(Room room)
         {
-            messageHandler = networkEntity.owner.inputController.GetMessageHandler<MovementInputHandler>((ushort)ClientDataTags.MoveObject);
-            messageHandler.RegisterMover(networkEntity.entityID, this);
+            controller.RegisterReadable(this, ClientDataTags.MoveObject);
+            controller.RegisterReadable(this, ClientDataTags.SetObjectPosition);
         }
-
-        public void ReadTranslationDataFromReader(DarkRiftReader reader, ClientDataTags tag)
+        public void HandlePlayerInputFromReader(DarkRiftReader reader, ClientDataTags tag)
         {
-            if(tag == ClientDataTags.MoveObject) 
+            if (tag == ClientDataTags.MoveObject)
             {
                 var data = reader.ReadSerializable<MovementData>();
                 networkEntity.rotation = data.rotation;
@@ -50,24 +50,21 @@ namespace FYP.Server
                 }
                 networkEntity.position += data.movementVector * speed * Time.fixedDeltaTime;
             }
-            else if(tag == ClientDataTags.SetObjectPosition) 
+            else if (tag == ClientDataTags.SetObjectPosition)
             {
                 var data = reader.ReadSerializable<MovementData>();
                 networkEntity.rotation = data.rotation;
                 var movVector = (data.movementVector - networkEntity.position);
-                if (movVector.magnitude > snapMaxMagnitude) 
+                if (movVector.magnitude < snapMaxMagnitude)
                 {
-                    movVector *= snapMaxMagnitude/movVector.magnitude;
+                    networkEntity.position = data.movementVector;
                 }
-                networkEntity.position = networkEntity.position + movVector;
             }
         }
-
-
-        private void RemoveListeners(ServerPlayer obj)
+        private void RemoveListeners(Room room)
         {
-            messageHandler.UnregisterMover(networkEntity.entityID);
-            messageHandler = null;
+            controller.UnregisterReadable(ClientDataTags.MoveObject);
+            controller.UnregisterReadable(ClientDataTags.SetObjectPosition);
         }
     }
 }

@@ -18,16 +18,34 @@ public struct EntityCreationData : IDarkRiftSerializable
     /// The unique id corresponding to the entity
     /// </summary>
     public uint entityID;
+    /// <summary>
+    /// Is the entity serverOwned
+    /// </summary>
+    public bool serverOwned;
+    /// <summary>
+    /// The client id of the owner of the entity
+    /// </summary>
+    public ushort ownerID;
     public void Deserialize(DeserializeEvent e)
     {
         entityType = e.Reader.ReadUInt16();
         entityID = e.Reader.ReadUInt32();
+        serverOwned = e.Reader.ReadBoolean();
+        if (!serverOwned) 
+        {
+            ownerID = e.Reader.ReadUInt16();
+        }
     }
 
     public void Serialize(SerializeEvent e)
     {
         e.Writer.Write(entityType);
         e.Writer.Write(entityID);
+        e.Writer.Write(serverOwned);
+        if (!serverOwned) 
+        {
+            e.Writer.Write(ownerID);
+        }
     }
 }
 

@@ -13,6 +13,9 @@ namespace FYP.Server
     {
         [SerializeField]
         private ushort _entityType = 0;
+        [Tooltip("How often should the LOR be checked")]
+        [SerializeField]
+        private float lorCheckInterval = 5f;
         public bool serverOwned => owner==null;
         public ServerPlayer owner { get; private set; }
         public ushort entityType => _entityType;
@@ -25,56 +28,113 @@ namespace FYP.Server
         public Vector3 position { get => transform.position; set => SetObjectPosition(value); }
         public Quaternion rotation { get => transform.rotation; set => transform.rotation = value; }
 
-
-
         public Action<Room> OnLeftRoom { get; set; }
         public Action<Room> OnEnteredRoom { get; set; }
 
-        public Action OnOwnerAssigned { get; set; }
-        public Action<ServerPlayer> OnOwnerRemoved { get; set; }
 
         /// <summary>
         /// Initialization Data required by clients to reproduce the entity clientside
         /// </summary>
         public abstract void WriteNewEntityDataToWriter(DarkRiftWriter writer);
 
+        private int lorCheckMaxValue = 0;
+        private int lorCheckCounter = 0;
+
         protected virtual void Awake()
         {
+            lorCheckMaxValue = Mathf.CeilToInt(lorCheckInterval / Time.fixedDeltaTime);
+            lorCheckCounter = lorCheckMaxValue;
+
             outputWriter = GetComponent<EntityOutputWriter>();
             OnEnteredRoom += SendRoomJoinedMessageToOthers;
             OnLeftRoom += SendRoomExitedMessageToOthers;
         }
 
+        private void FixedUpdate()
+        {
+            if (lorCheckCounter <= 0) 
+            {
+                if (room != null) 
+                {
+                    if (!lor.bounds.Contains(position)) 
+                    {
+                        var target = room.GetLOR(position);
+                        if (target != lor && target != null)
+                        {
+                            Debug.Log($"LOR Changed from ({lor.index[0]},{lor.index[2]}) to ({target.index[0]},{target.index[2]})");
+                            lor.TransferObject(this, target);
+                        }
+                    }
+                }
+                lorCheckCounter = lorCheckMaxValue;
+            }
+            else 
+            {
+                lorCheckCounter--;
+            }
+        }
+
         private void SendRoomExitedMessageToOthers(Room obj)
         {
-            if(!(this is PlayerEntity)) 
+            using (var writer = DarkRiftWriter.Create())
             {
-                using (var writer = DarkRiftWriter.Create())
+                writer.Write(new EntityDestroyData() { entityID = entityID });
+                using (var message = Message.Create((ushort)ServerTags.EntityDestroyed, writer))
                 {
-                    writer.Write(new EntityDestroyData() { entityID = entityID });
-                    using (var message = Message.Create((ushort)ServerTags.EntityDestroyed, writer))
+                    if (!(this is PlayerEntity thisPlayer))
                     {
-                        room.SendMessageToEntireRoom(message, SendMode.Reliable);
+                        foreach (var roomPlayer in room.players)
+                        {
+                            roomPlayer.player.client.SendMessage(message, SendMode.Reliable);
+                        }
+                    }
+                    else 
+                    {
+                        foreach (var roomPlayer in room.players)
+                        {
+                            if (roomPlayer != thisPlayer) 
+                            {
+                                roomPlayer.player.client.SendMessage(message, SendMode.Reliable);
+                            }
+                        }
                     }
                 }
             }
         }
 
+
         private void SendRoomJoinedMessageToOthers(Room room) 
         {
             using (var writer = DarkRiftWriter.Create())
             {
-                writer.Write(new EntityCreationData() { entityID = entityID, entityType = entityType });
+                if (serverOwned) 
+                {
+                    writer.Write(new EntityCreationData() { entityID = entityID, entityType = entityType, serverOwned = serverOwned });
+                }
+                else 
+                {
+                    writer.Write(new EntityCreationData() { entityID = entityID, entityType = entityType, serverOwned = serverOwned, ownerID = owner.client.ID });
+                }
+
                 WriteNewEntityDataToWriter(writer);
                 using (var message = Message.Create((ushort)ServerTags.EntitySpawned, writer))
                 {
                     if(this is PlayerEntity player) 
                     {
-                        room.SendMessageToEntireRoomExceptPlayer(player, message, SendMode.Reliable);
+                        foreach (var allPlayer in room.players)
+                        {
+                            if (allPlayer != player) 
+                            {
+                                allPlayer.player.client.SendMessage(message, SendMode.Reliable);
+                            }
+                        }
                     }
                     else 
                     {
-                        room.SendMessageToEntireRoom(message, SendMode.Reliable);
+                        foreach (var allPlayer in room.players)
+                        {
+                            allPlayer.player.client.SendMessage(message, SendMode.Reliable);
+                        }
                     }
                 }
             }
@@ -88,17 +148,9 @@ namespace FYP.Server
         public void SetOwner(ServerPlayer owner) 
         {
             this.owner = owner;
-            if (owner != null) 
-            {
-                OnOwnerAssigned?.Invoke();
-            }
         }
         public void RemoveOwner() 
         {
-            if (owner != null) 
-            {
-                OnOwnerRemoved?.Invoke(owner);
-            }
             owner = null;
         }
         protected virtual void OnDestroy()

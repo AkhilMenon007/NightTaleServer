@@ -31,11 +31,13 @@ namespace FYP.Server
                 {
                     if (value)
                     {
+                        networkEntity.outputWriter.OnReset += ResetUpdateData;
                         networkEntity.outputWriter.RegisterOutputHandler(this);
                     }
                     else
                     {
                         networkEntity.outputWriter.UnregisterOutputHandler(this);
+                        networkEntity.outputWriter.OnReset -= ResetUpdateData;
                     }
                     _isDirty = value;
                 }

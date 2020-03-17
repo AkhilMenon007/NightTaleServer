@@ -1,0 +1,42 @@
+[Trace]   DarkRiftServer        System Details:
+                                	OS: Microsoft Windows NT 10.0.18363.0
+                                	CLS Version: 4.0.30319.42000
+                                	DarkRift: 2.5.0.0 - Free
+[Trace]   PluginFactory         Created plugin 'CompatibilityBichannelListener'.
+[Trace]   DefaultNetworkListener Starting compatibility listener.
+[Info]    DefaultNetworkListener Server mounted, listening on port 4296.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:50429.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:49496.
+[Info]    ClientManager         New client [0] connected [127.0.0.1:50429|127.0.0.1:49496].
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:50431.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:49497.
+[Info]    ClientManager         New client [1] connected [127.0.0.1:50431|127.0.0.1:49497].
+[Info]    ClientManager         Client [0] disconnected.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:50911.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:65191.
+[Info]    ClientManager         New client [2] connected [127.0.0.1:50911|127.0.0.1:65191].
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:50913.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:65192.
+[Info]    ClientManager         New client [3] connected [127.0.0.1:50913|127.0.0.1:65192].
+[Info]    ClientManager         Client [2] disconnected.
+[Info]    ClientManager         Client [3] disconnected.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:50916.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:65193.
+[Info]    ClientManager         New client [4] connected [127.0.0.1:50916|127.0.0.1:65193].
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:50920.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:50922.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:50921.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:65195.
+[Info]    ClientManager         New client [5] connected [127.0.0.1:50922|127.0.0.1:65195].
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:65196.
+[Info]    ClientManager         New client [6] connected [127.0.0.1:50921|127.0.0.1:65196].
+[Info]    ClientManager         Client [4] disconnected.
+[Info]    ClientManager         Client [5] disconnected.
+[Trace]   NetworkListener       Connection attempt from 127.0.0.1:50920 timed out.
+[Warning] ObjectCacheMonitor    1 AutoRecyclingArray objects were finalized last period. This is usually a sign that you are not recycling objects correctly.
+[Warning] ObjectCacheMonitor    1 MessageBuffer objects were finalized last period. This is usually a sign that you are not recycling objects correctly.
+[Info]    ClientManager         Client [6] disconnected.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:50979.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:60950.
+[Info]    ClientManager         New client [7] connected [127.0.0.1:50979|127.0.0.1:60950].
+[Info]    ClientManager         Client [7] disconnected.

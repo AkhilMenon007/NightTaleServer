@@ -1,18 +1,17 @@
 ﻿using DarkRift;
 using DarkriftSerializationExtensions;
+using FYP.Shared;
 using UnityEngine;
 
 
-
-/// <summary>
-/// Client Update Data sent every tick
-/// </summary>
-public struct ClientUpdateData : IDarkRiftSerializable
+public struct ClientTag : IDarkRiftSerializable 
 {
-    /// <summary>
-    /// Tag used to identify the kind of update, every message here is required to identify its entity
-    /// </summary>
     public ushort tag;
+
+    public ClientTag(ClientDataTags tag)
+    {
+        this.tag = (ushort)tag;
+    }
     public void Deserialize(DeserializeEvent e)
     {
         tag = e.Reader.ReadUInt16();
@@ -21,6 +20,29 @@ public struct ClientUpdateData : IDarkRiftSerializable
     public void Serialize(SerializeEvent e)
     {
         e.Writer.Write(tag);
+    }
+}
+/// <summary>
+/// Client Update Data sent every tick
+/// </summary>
+[System.Serializable]
+public struct ClientUpdateData : IDarkRiftSerializable
+{
+    /// <summary>
+    /// Tag used to identify the kind of update, every message here is required to identify its entity
+    /// </summary>
+    public uint entID;
+    public ushort count;
+    public void Deserialize(DeserializeEvent e)
+    {
+        entID = e.Reader.ReadUInt32();
+        count = e.Reader.ReadUInt16();
+    }
+
+    public void Serialize(SerializeEvent e)
+    {
+        e.Writer.Write(entID);
+        e.Writer.Write(count);
     }
 }
 public struct EntityID : IDarkRiftSerializable

@@ -1,5 +1,6 @@
 ﻿using DarkRift.Server;
 using FYP.Server.Player;
+using FYP.Server.RoomManagement;
 using FYP.Shared;
 using System;
 using System.Collections;
@@ -8,34 +9,47 @@ using UnityEngine;
 
 namespace FYP.Server
 {
-    [RequireComponent(typeof(PlayerEntity))]
+    [RequireComponent(typeof(ServerPlayer))]
     public class PlayerInputController : MonoBehaviour
     {
-        public PlayerEntity player { get; private set; }
+        public ServerPlayer player { get; private set; }
 
-        private readonly Dictionary<ClientDataTags, IServerReadable> inputHandlerLookup = new Dictionary<ClientDataTags, IServerReadable>();
-
-        public T GetMessageHandler<T>(ClientDataTags tag) where T:MonoBehaviour,IServerReadable
-        {
-            if (inputHandlerLookup.ContainsKey(tag)) 
-            {
-                return inputHandlerLookup[tag] as T;
-            }
-            return null;
-        }
-
+        private readonly Dictionary<uint, PlayerControllableEntity> controlledEntities = new Dictionary<uint, PlayerControllableEntity>();
         private void Awake()
         {
-            player = GetComponent<PlayerEntity>();
-            player.OnOwnerAssigned += OwnerAssignedCallback;
-            player.OnOwnerRemoved += OwnerRemovedCallback;
+            player = GetComponent<ServerPlayer>();
+            player.OnInitialize += RegisterListeners;
+            player.OnDelete += RemoveListeners;
         }
 
-        private void OwnerAssignedCallback()
+
+        private void RegisterListeners(ConnectedPlayer arg1, IClient arg2)
         {
-            player.owner.client.MessageReceived += HandleClientInput;
+            player.playerEntity.OnEnteredRoom += RoomEnteredCallback;
+            player.playerEntity.OnLeftRoom += RoomExitedCallback;
         }
 
+        private void RoomEnteredCallback(Room room)
+        {
+            player.client.MessageReceived += HandleClientInput;
+        }
+
+
+
+        public void RegisterControllableEntity(PlayerControllableEntity entity) 
+        {
+            if (entity != null) 
+            {
+                controlledEntities[entity.networkEntity.entityID] = entity;
+            }
+        }
+        public void UnregisterControllableEntity(PlayerControllableEntity entity) 
+        {
+            if (entity != null) 
+            {
+                controlledEntities.Remove(entity.networkEntity.entityID);
+            }
+        }
         private void HandleClientInput(object sender, MessageReceivedEventArgs e)
         {
             if (e.Tag == (ushort)ClientTags.ClientUpdate) 
@@ -44,17 +58,23 @@ namespace FYP.Server
                 {
                     using(var reader = message.GetReader()) 
                     {
-                        while (reader.Position <= reader.Length) 
+                        while (reader.Position < reader.Length) 
                         {
                             var updateData = reader.ReadSerializable<ClientUpdateData>();
-                            if(inputHandlerLookup.TryGetValue((ClientDataTags)updateData.tag,out var handler)) 
+                            if(updateData.count < reader.Position) 
                             {
-                                handler.HandlePlayerInputFromReader(reader, (ClientDataTags)updateData.tag);
+                                break;
+                            }
+                            if(controlledEntities.TryGetValue(updateData.entID,out var entity)) 
+                            {
+                                if(entity.ownerID == player.client.ID) 
+                                {
+                                    entity.ReadUpdateData(reader, updateData.count);
+                                }
                             }
                             else 
                             {
-                                Debug.LogError($"No Handler registered for tag {updateData.tag} on Player {player.player.client.ID}");
-                                break;
+                                reader.Position = updateData.count;
                             }
                         }
                     }
@@ -62,28 +82,15 @@ namespace FYP.Server
             }
         }
 
-        public void RegisterInputHandler(IServerReadable inputHandler,ClientDataTags tag) 
-        {
-            if (inputHandler != null) 
-            {
-                inputHandlerLookup[tag] = inputHandler;
-            }
-        }
 
-        public void UnregisterInputHandler(IServerReadable inputHandler, ClientDataTags tag) 
+        private void RoomExitedCallback(Room obj)
         {
-            if(inputHandlerLookup.TryGetValue(tag,out var handler)) 
-            {
-                if(handler == inputHandler) 
-                {
-                    inputHandlerLookup.Remove(tag);
-                }
-            }
+            player.client.MessageReceived -= HandleClientInput;
         }
-
-        private void OwnerRemovedCallback(ServerPlayer obj)
+        private void RemoveListeners()
         {
-            obj.client.MessageReceived -= HandleClientInput;
+            player.playerEntity.OnEnteredRoom -= RoomEnteredCallback;
+            player.playerEntity.OnLeftRoom -= RoomExitedCallback;
         }
     }
 }
