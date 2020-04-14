@@ -140,7 +140,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _origin: {fileID: 8125324850802881410}
-  _clientSceneIndex: 0
+  _clientSceneIndex: 4
 --- !u!114 &6000861803224261155
 MonoBehaviour:
   m_ObjectHideFlags: 0

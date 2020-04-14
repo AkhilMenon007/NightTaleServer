@@ -110,46 +110,20 @@ public struct NewPlayerData : IDarkRiftSerializable
     }
 }
 
-public struct PlayerTransformData : IDarkRiftSerializable
+public struct VRTransformData : IDarkRiftSerializable
 {
-    public ushort clientID;
-    public bool vrEnabled;
     /// <summary>
     /// Transforms of VR Objects 0 for Headset, 1 for right controller and 2 for left controller
     /// </summary>
     public TransformData[] vrTransforms;
-    public Vector3 position;
-    public Quaternion rotation;
     public void Deserialize(DeserializeEvent e)
     {
-        clientID = e.Reader.ReadUInt16();
-        vrEnabled = e.Reader.ReadBoolean();
-        if (vrEnabled) 
-        {
-            vrTransforms = new TransformData[3];
-            e.Reader.ReadSerializablesInto(vrTransforms, 0);
-            position = e.Reader.ReadVector3();
-        }
-        else 
-        {
-            position = e.Reader.ReadVector3();
-            rotation = e.Reader.ReadQuaternionCompressed();
-        }
+        vrTransforms = new TransformData[3];
+        e.Reader.ReadSerializablesInto(vrTransforms, 0);
     }
     public void Serialize(SerializeEvent e)
     {
-        e.Writer.Write(clientID);
-        e.Writer.Write(vrEnabled);
-        if (vrEnabled) 
-        {
-            e.Writer.Write(vrTransforms);
-            e.Writer.WriteVector3(position);
-        }
-        else 
-        {
-            e.Writer.WriteVector3(position);
-            e.Writer.WriteQuaternionCompressed(rotation);
-        }
+        e.Writer.Write(vrTransforms);
     }
 }
 

@@ -1,4 +1,5 @@
 ﻿using DarkRift;
+using FYP.Client;
 using FYP.Server.Player;
 using FYP.Shared;
 using System;
@@ -14,9 +15,9 @@ namespace FYP.Server.RoomManagement
         [SerializeField]
         private Transform _origin = null;
         [SerializeField]
-        private ushort _clientSceneIndex = 0;
+        private ClientScenes.SceneList _clientSceneIndex = ClientScenes.SceneList.Gameplay;
 
-        public ushort clientSceneIndex => _clientSceneIndex;
+        public ushort clientSceneIndex => (ushort)_clientSceneIndex;
         public int playerCount => players.Count;
         public Transform origin => _origin;
 
