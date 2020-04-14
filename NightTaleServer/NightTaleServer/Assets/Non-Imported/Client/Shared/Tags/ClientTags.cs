@@ -26,6 +26,13 @@ namespace FYP.Shared
         /// </summary>
         CreateRoomRequest,
 
+
+        //------VR------
+        /// <summary>
+        /// Message Sent to server indicating the player went VR
+        /// </summary>
+        VRTransition,
+
         //----- UPDATE DATA------
 
         /// <summary>

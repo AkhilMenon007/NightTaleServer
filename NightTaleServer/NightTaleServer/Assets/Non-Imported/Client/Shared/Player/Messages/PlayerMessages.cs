@@ -2,7 +2,51 @@
 using DarkriftSerializationExtensions;
 using UnityEngine;
 
+/// <summary>
+/// Message Sent from Client to Server
+/// </summary>
+public struct VRChangeData : IDarkRiftSerializable
+{
+    public bool state;
+    public float heightMLP;
+    public float armMLP;
+    public void Deserialize(DeserializeEvent e)
+    {
+        state = e.Reader.ReadBoolean();
+        if (state) 
+        {
+            heightMLP = e.Reader.ReadSingle();
+            armMLP = e.Reader.ReadSingle();
+        }
+    }
 
+    public void Serialize(SerializeEvent e)
+    {
+        e.Writer.Write(state);
+        if (state) 
+        {
+            e.Writer.Write(heightMLP);
+            e.Writer.Write(armMLP);
+        }
+    }
+}
+
+public struct VRChangeReply : IDarkRiftSerializable
+{
+    public ushort clientID;
+    public VRChangeData vrData;
+    public void Deserialize(DeserializeEvent e)
+    {
+        clientID = e.Reader.ReadUInt16();
+        vrData = e.Reader.ReadSerializable<VRChangeData>();
+    }
+
+    public void Serialize(SerializeEvent e)
+    {
+        e.Writer.Write(clientID);
+        e.Writer.Write(vrData);
+    }
+}
 
 
 /// <summary>
@@ -92,20 +136,20 @@ public struct NewPlayerData : IDarkRiftSerializable
 {
     public ushort clientID;
     public string charID;
-    public bool vrEnabled;
+    public VRChangeData vrData;
     public TransformData transformData;
     public void Deserialize(DeserializeEvent e)
     {
         clientID = e.Reader.ReadUInt16();
         charID = e.Reader.ReadString();
-        vrEnabled = e.Reader.ReadBoolean();
+        vrData = e.Reader.ReadSerializable<VRChangeData>();
         transformData = e.Reader.ReadSerializable<TransformData>();
     }
     public void Serialize(SerializeEvent e)
     {
         e.Writer.Write(clientID);
         e.Writer.Write(charID);
-        e.Writer.Write(vrEnabled);
+        e.Writer.Write(vrData);
         e.Writer.Write(transformData);
     }
 }
@@ -113,7 +157,7 @@ public struct NewPlayerData : IDarkRiftSerializable
 public struct VRTransformData : IDarkRiftSerializable
 {
     /// <summary>
-    /// Transforms of VR Objects 0 for Headset, 1 for right controller and 2 for left controller
+    /// Transforms of VR Objects 0 for Headset, 1 for left controller and 2 for right controller
     /// </summary>
     public TransformData[] vrTransforms;
     public void Deserialize(DeserializeEvent e)

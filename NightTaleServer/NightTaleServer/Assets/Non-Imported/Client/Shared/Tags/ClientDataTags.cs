@@ -9,7 +9,11 @@
         /// <summary>
         /// Asks server to set the position and rotation of an object
         /// </summary>
-        SetObjectPosition
+        SetObjectPosition,
+        /// <summary>
+        /// Asks server to set the transforms of VR objects
+        /// </summary>
+        VRTransform
     }
 
 }

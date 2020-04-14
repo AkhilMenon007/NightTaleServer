@@ -43,7 +43,7 @@ public class MasterServerManager : MonoBehaviour
         var bytes = new byte[32];
         random.NextBytes(bytes);
         commonMessage = Convert.ToBase64String(bytes);
-        Debug.Log(commonMessage);
+        //Debug.Log(commonMessage);
     }
 
 
