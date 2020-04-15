@@ -2,6 +2,22 @@
 using DarkriftSerializationExtensions;
 using UnityEngine;
 
+
+
+public struct ResumeGameMessage : IDarkRiftSerializable
+{
+    public VRChangeData vrData;
+    public void Deserialize(DeserializeEvent e)
+    {
+        vrData = e.Reader.ReadSerializable<VRChangeData>();
+    }
+
+    public void Serialize(SerializeEvent e)
+    {
+        e.Writer.Write(vrData);
+    }
+}
+
 /// <summary>
 /// Message Sent from Client to Server
 /// </summary>
@@ -20,6 +36,14 @@ public struct VRChangeData : IDarkRiftSerializable
         }
     }
 
+    public override bool Equals(object obj)
+    {
+        return obj is VRChangeData data &&
+               state == data.state &&
+               heightMLP == data.heightMLP &&
+               armMLP == data.armMLP;
+    }
+
     public void Serialize(SerializeEvent e)
     {
         e.Writer.Write(state);
@@ -28,6 +52,21 @@ public struct VRChangeData : IDarkRiftSerializable
             e.Writer.Write(heightMLP);
             e.Writer.Write(armMLP);
         }
+    }
+
+    public static bool operator ==(VRChangeData left, VRChangeData right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(VRChangeData left, VRChangeData right)
+    {
+        return !(left == right);
+    }
+
+    public override int GetHashCode()
+    {
+        return armMLP.GetHashCode() + heightMLP.GetHashCode() + state.GetHashCode();
     }
 }
 
@@ -169,6 +208,20 @@ public struct VRTransformData : IDarkRiftSerializable
     {
         e.Writer.Write(vrTransforms);
     }
+
+    public VRTransformData(Transform head,Transform left, Transform right) 
+    {
+        vrTransforms = new TransformData[3];
+
+        vrTransforms[0].position = head.transform.localPosition;
+        vrTransforms[1].position = left.transform.localPosition;
+        vrTransforms[2].position = right.transform.localPosition;
+
+        vrTransforms[0].rotation = head.transform.localRotation;
+        vrTransforms[1].rotation = left.transform.localRotation;
+        vrTransforms[2].rotation = right.transform.localRotation;
+    }
+
 }
 
 public struct TransformData : IDarkRiftSerializable

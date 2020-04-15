@@ -13,7 +13,7 @@ namespace FYP .Client
             LoginScene =1,
             CharacterSelectScene =2,
             CharacterCreateScene =3,
-            VRCalibration,
+            VRCalibration = 4,
             Gameplay = 5
 
         }

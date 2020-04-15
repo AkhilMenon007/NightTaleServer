@@ -32,37 +32,8 @@ namespace FYP.Server.Player
             OnLeftRoom += PlayerLeftRoomCallback;
             client.MessageReceived += RoomDataRequestCallback;
             client.MessageReceived += JoinLastRoomRequestCallback;
-            client.MessageReceived += HandleVRTransition;
         }
 
-        private void HandleVRTransition(object sender, MessageReceivedEventArgs e)
-        {
-            if(e.Tag == (ushort)ClientTags.VRTransition) 
-            {
-                using(var message = e.GetMessage()) 
-                {
-                    using(var reader = message.GetReader()) 
-                    {
-                        var data = reader.ReadSerializable<VRChangeData>();
-                        vrData = data;
-
-                        vrHandler.enabled = vrData.state;
-
-                        using(var writer = DarkRiftWriter.Create()) 
-                        {
-                            writer.Write(new VRChangeReply { clientID = e.Client.ID,vrData = data});
-                            using(var response = Message.Create((ushort)ServerTags.VRStateChanged, writer)) 
-                            {
-                                foreach (var player in room.players)
-                                {
-                                    player.player.client.SendMessage(response, SendMode.Reliable);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
 
         public override void WriteNewEntityDataToWriter(DarkRiftWriter writer)
         {
@@ -80,9 +51,19 @@ namespace FYP.Server.Player
         }
         private void JoinLastRoomRequestCallback(object sender, MessageReceivedEventArgs e)
         {
-            if(e.Tag == (ushort)ClientTags.JoinLastRoomRequest) 
+            if(e.Tag == (ushort)ClientTags.ResumeGame) 
             {
                 player.client.MessageReceived -= JoinLastRoomRequestCallback;
+
+                using(var message = e.GetMessage()) 
+                {
+                    using(var reader = message.GetReader()) 
+                    {
+                        var data = reader.ReadSerializable<ResumeGameMessage>();
+                        vrData = data.vrData;
+                        vrHandler.enabled = vrData.state;
+                    }
+                }
                 JoinLastRoom(player.playerData);
             }
         }
@@ -163,9 +144,6 @@ namespace FYP.Server.Player
             OnLeftRoom -= PlayerLeftRoomCallback;
             player.client.MessageReceived -= RoomDataRequestCallback;
             player.client.MessageReceived -= JoinLastRoomRequestCallback;
-            player.client.MessageReceived -= HandleVRTransition;
-
-
         }
         private void SavePlayerData(ConnectedPlayer obj)
         {

@@ -20,18 +20,12 @@ namespace FYP.Shared
         /// <summary>
         /// Request server to send the template and instance ID of the current room typically for first login
         /// </summary>
-        JoinLastRoomRequest,
+        ResumeGame,
         /// <summary>
         /// Requests server to create a room with a given template ID
         /// </summary>
         CreateRoomRequest,
 
-
-        //------VR------
-        /// <summary>
-        /// Message Sent to server indicating the player went VR
-        /// </summary>
-        VRTransition,
 
         //----- UPDATE DATA------
 

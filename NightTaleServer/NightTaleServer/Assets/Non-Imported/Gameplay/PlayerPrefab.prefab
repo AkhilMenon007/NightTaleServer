@@ -15,7 +15,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5087071601036791733
 Transform:
   m_ObjectHideFlags: 0
@@ -45,7 +45,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6270225403939091828
 Transform:
   m_ObjectHideFlags: 0
@@ -334,7 +334,6 @@ MonoBehaviour:
   left: {fileID: 4883841868514392468}
   right: {fileID: 5087071601036791733}
   controllableEntity: {fileID: -2350581969889277983}
-  networkEntity: {fileID: -7779411314030392199}
 --- !u!1 &7708833139601268803
 GameObject:
   m_ObjectHideFlags: 0
@@ -350,7 +349,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4883841868514392468
 Transform:
   m_ObjectHideFlags: 0

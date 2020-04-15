@@ -36,11 +36,7 @@
         /// <summary>
         /// Send message to client with update data of all the entities in adjacent LORs
         /// </summary>
-        UpdateData,
-        /// <summary>
-        /// Send message to clients indicating that the player made change in their VR setting
-        /// </summary>
-        VRStateChanged
+        UpdateData
     }
 
 }
