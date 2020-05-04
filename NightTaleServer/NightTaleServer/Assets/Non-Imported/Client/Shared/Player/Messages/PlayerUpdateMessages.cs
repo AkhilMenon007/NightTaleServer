@@ -77,3 +77,50 @@ public struct MovementData : IDarkRiftSerializable
         e.Writer.WriteQuaternionCompressed(rotation);
     }
 }
+
+public struct VRTransformData : IDarkRiftSerializable
+{
+    /// <summary>
+    /// Transforms of VR Objects 0 for Headset, 1 for left controller and 2 for right controller
+    /// </summary>
+    public TransformData[] vrTransforms;
+    public void Deserialize(DeserializeEvent e)
+    {
+        vrTransforms = new TransformData[3];
+        e.Reader.ReadSerializablesInto(vrTransforms, 0);
+    }
+    public void Serialize(SerializeEvent e)
+    {
+        e.Writer.Write(vrTransforms);
+    }
+
+    public VRTransformData(Transform head, Transform left, Transform right)
+    {
+        vrTransforms = new TransformData[3];
+
+        vrTransforms[0].position = head.transform.localPosition;
+        vrTransforms[1].position = left.transform.localPosition;
+        vrTransforms[2].position = right.transform.localPosition;
+
+        vrTransforms[0].rotation = head.transform.localRotation;
+        vrTransforms[1].rotation = left.transform.localRotation;
+        vrTransforms[2].rotation = right.transform.localRotation;
+    }
+
+}
+
+public struct TransformData : IDarkRiftSerializable
+{
+    public Vector3 position;
+    public Quaternion rotation;
+    public void Deserialize(DeserializeEvent e)
+    {
+        position = e.Reader.ReadVector3();
+        rotation = e.Reader.ReadQuaternionCompressed();
+    }
+    public void Serialize(SerializeEvent e)
+    {
+        e.Writer.WriteVector3(position);
+        e.Writer.WriteQuaternionCompressed(rotation);
+    }
+}

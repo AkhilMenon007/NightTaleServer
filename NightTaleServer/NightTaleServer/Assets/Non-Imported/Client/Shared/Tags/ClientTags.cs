@@ -34,6 +34,17 @@ namespace FYP.Shared
         /// </summary>
         ClientUpdate,
 
+        //-------SKILL SYSTEM-----
+
+        /// <summary>
+        /// Request sent from client to server indicating a weapon change
+        /// </summary>
+        ChangeWeapon,
+        /// <summary>
+        /// Request sent from client to server indicating a skill change
+        /// </summary>
+        ChangeSkill,
+
 
         /// <summary>
         /// This tag is used to chain to server tags

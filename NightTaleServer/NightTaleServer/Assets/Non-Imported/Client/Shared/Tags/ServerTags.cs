@@ -36,7 +36,15 @@
         /// <summary>
         /// Send message to client with update data of all the entities in adjacent LORs
         /// </summary>
-        UpdateData
+        UpdateData,
+        /// <summary>
+        /// Send message to client signalling a client has changed in one of their equipped items
+        /// </summary>
+        SkillChange,
+        /// <summary>
+        /// Send message to client signalling a client changed one of their items
+        /// </summary>
+        ItemChange
     }
 
 }

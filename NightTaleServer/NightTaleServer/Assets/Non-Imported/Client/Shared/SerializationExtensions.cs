@@ -1,11 +1,45 @@
 ﻿using System;
 using DarkRift;
+using FYP.Shared;
 using UnityEngine;
 
 namespace DarkriftSerializationExtensions
 {
     public static class SerializationExtensions
     {
+
+        public static void WriteSingleEquipSlot(this DarkRiftWriter writer,EquipSlot slot) 
+        {
+            byte res = 0;
+            int s = (int)slot;
+            while (s != 0) 
+            {
+                s >>= 1;
+                res++;
+            }
+            writer.Write(res);
+        }
+        public static EquipSlot ReadSingleEquipSlot(this DarkRiftReader reader) 
+        {
+            var readValue = reader.ReadByte();
+            if(readValue == 0) 
+            {
+                return 0;
+            }
+            else 
+            {
+                return (EquipSlot)(1 << (readValue-1));
+            }
+        }
+        public static void WriteEquipSlot(this DarkRiftWriter writer, EquipSlot slot) 
+        {
+            writer.Write((uint)slot);
+        }
+        public static EquipSlot ReadEquipSlot(this DarkRiftReader reader) 
+        {
+            return (EquipSlot)reader.ReadUInt16();
+        }
+
 
         /// <summary>
         /// Writes a Vector3 (12 bytes)
