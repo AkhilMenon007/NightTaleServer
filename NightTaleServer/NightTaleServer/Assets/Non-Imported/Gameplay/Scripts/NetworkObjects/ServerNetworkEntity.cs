@@ -50,6 +50,14 @@ namespace FYP.Server
 
         protected virtual void Awake()
         {
+            if (unreliableOutputWriter != null) 
+            {
+                unreliableOutputWriter.entity = this;
+            }
+            if (reliableOutputWriter != null) 
+            {
+                reliableOutputWriter.entity = this;
+            }
             lorCheckMaxValue = Mathf.CeilToInt(lorCheckInterval / Time.fixedDeltaTime);
             lorCheckCounter = lorCheckMaxValue;
 
@@ -66,8 +74,8 @@ namespace FYP.Server
                 {
                     foreach (var item in adjLor.objects)
                     {
-                        item.unreliableOutputWriter.WriteUpdateDataToWriter(writer);
-                        item.reliableOutputWriter.WriteUpdateDataToWriter(writer);
+                        item.unreliableOutputWriter.WriteStateDataToWriter(writer);
+                        item.reliableOutputWriter.WriteStateDataToWriter(writer);
                     }
                 }
                 if (writer.Length != 0)

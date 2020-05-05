@@ -134,7 +134,14 @@ namespace FYP.Server.Player
 
         private void SaveSkillData(ConnectedPlayer saveData)
         {
-            saveData.equipData.equippedItems.Clear();
+            if(saveData.equipData == null) 
+            {
+                saveData.equipData = new PlayerEquipData();
+            }
+            else 
+            {
+                saveData.equipData.equippedItems.Clear();
+            }
             if (primaryHand.equippedItem != null)
             {
                 saveData.equipData.equippedItems.Add(new EquipItem { slotID = (int)primaryHand.slot, itemID = primaryHand.equippedItem.itemData.id });
@@ -175,12 +182,15 @@ namespace FYP.Server.Player
 
         private void LoadSkillData(ConnectedPlayer saveData) 
         {
-            foreach (var item in saveData.equipData.equippedItems)
+            if (saveData.equipData != null)
             {
-                GetItemSlot((EquipSlot)item.slotID).EquipItem(itemLookup.GetItem((uint)item.itemID));
+                foreach (var item in saveData.equipData.equippedItems)
+                {
+                    GetItemSlot((EquipSlot)item.slotID).EquipItem(itemLookup.GetItem((uint)item.itemID));
+                }
+                primaryHand.EquipSkill(skillLookup.GetSkill((uint)saveData.equipData.primaryHandSkillID));
+                secondaryHand.EquipSkill(skillLookup.GetSkill((uint)saveData.equipData.secondaryHandSkillID));
             }
-            primaryHand.EquipSkill(skillLookup.GetSkill((uint)saveData.equipData.primaryHandSkillID));
-            secondaryHand.EquipSkill(skillLookup.GetSkill((uint)saveData.equipData.secondaryHandSkillID));
         }
 
 

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace FYP.Server.Player
 {
-    [CreateAssetMenu(menuName = "FYP/SkillSystem/Weapon")]
+    [CreateAssetMenu(menuName = "FYP/SkillSystem/WeaponItem")]
     public class ServerWeapon : Weapon
     {
     }

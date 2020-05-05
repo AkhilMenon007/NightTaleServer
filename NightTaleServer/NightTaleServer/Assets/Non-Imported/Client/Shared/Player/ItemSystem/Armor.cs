@@ -7,8 +7,8 @@ namespace FYP.Shared
     public class Armor : Item
     {
         [SerializeField]
-        private EquipSlot slot;
+        private EquipSlot equipSlot = EquipSlot.Chest;
 
-        public override EquipSlot equippableSlots => slot;
+        public override EquipSlot equippableSlots => equipSlot;
     }
 }

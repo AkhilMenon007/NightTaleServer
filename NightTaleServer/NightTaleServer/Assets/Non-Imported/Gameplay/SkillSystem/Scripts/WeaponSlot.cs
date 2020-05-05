@@ -48,8 +48,9 @@ namespace FYP.Server.Player
         public override void WriteStateDataToWriter(DarkRiftWriter writer)
         {
             base.WriteStateDataToWriter(writer);
-            writer.Write(new ServerUpdateTag(ServerUpdateTags.SkillUpdate));
-            writer.Write(new SkillChangeMessage { skillInfo = new SkillSetMessage { skillID = (ushort)equippedSkillID }, slot = slot });
+            //No need to write Skill data as it will be set by the syncMessage
+            //writer.Write(new ServerUpdateTag(ServerUpdateTags.SkillUpdate));
+            //writer.Write(new SkillChangeMessage { skillInfo = new SkillSetMessage { skillID = (ushort)equippedSkillID }, slot = slot });
         }
         public override void WriteUpdateDataToWriter(DarkRiftWriter writer)
         {

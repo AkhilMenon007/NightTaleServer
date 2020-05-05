@@ -57,6 +57,7 @@ namespace FYP.Server.RoomManagement
             foreach (var item in room.networkEntities.Values)
             {
                 item.unreliableOutputWriter.ResetUpdateData();
+                item.reliableOutputWriter.ResetUpdateData();
             }
         }
     }

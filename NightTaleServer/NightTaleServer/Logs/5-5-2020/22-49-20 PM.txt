@@ -1,0 +1,25 @@
+[Trace]   DarkRiftServer        System Details:
+                                	OS: Microsoft Windows NT 10.0.18363.0
+                                	CLS Version: 4.0.30319.42000
+                                	DarkRift: 2.5.0.0 - Free
+[Trace]   PluginFactory         Created plugin 'CompatibilityBichannelListener'.
+[Trace]   DefaultNetworkListener Starting compatibility listener.
+[Info]    DefaultNetworkListener Server mounted, listening on port 4296.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:39620.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:39621.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:39622.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:56504.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:56505.
+[Info]    ClientManager         New client [0] connected [127.0.0.1:39622|127.0.0.1:56505].
+[Info]    ClientManager         New client [1] connected [127.0.0.1:39621|127.0.0.1:56504].
+[Info]    ClientManager         Client [0] disconnected: ConnectionAborted.
+                                 System.Net.Sockets.SocketException (0x80004005): An established connection was aborted by the software in your host machine.
+                                 
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:39627.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:56506.
+[Info]    ClientManager         New client [2] connected [127.0.0.1:39627|127.0.0.1:56506].
+[Trace]   NetworkListener       Connection attempt from 127.0.0.1:39620 timed out.
+[Info]    ClientManager         Client [1] disconnected.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:39650.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:50915.
+[Info]    ClientManager         New client [3] connected [127.0.0.1:39650|127.0.0.1:50915].

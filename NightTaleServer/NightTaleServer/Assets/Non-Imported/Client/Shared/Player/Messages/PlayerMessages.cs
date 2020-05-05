@@ -1,5 +1,6 @@
 ﻿using DarkRift;
 using DarkriftSerializationExtensions;
+using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -178,14 +179,19 @@ namespace FYP.Shared
         public string charID;
         public VRChangeData vrData;
         public TransformData transformData;
-        public EquipMessage[] equipData;
+        public List<EquipMessage> equipData;
         public void Deserialize(DeserializeEvent e)
         {
             clientID = e.Reader.ReadUInt16();
             charID = e.Reader.ReadString();
             e.Reader.ReadSerializableInto(ref vrData);
             e.Reader.ReadSerializableInto(ref transformData);
-            e.Reader.ReadSerializablesInto(equipData,0);
+            int equipCount = e.Reader.ReadByte();
+            equipData = new List<EquipMessage>(equipCount);
+            for (int i = 0; i < equipCount; i++)
+            {
+                equipData.Add(e.Reader.ReadSerializable<EquipMessage>());
+            }
         }
         public void Serialize(SerializeEvent e)
         {
@@ -193,7 +199,11 @@ namespace FYP.Shared
             e.Writer.Write(charID);
             e.Writer.Write(vrData);
             e.Writer.Write(transformData);
-            e.Writer.Write(equipData);
+            e.Writer.Write((byte)equipData.Count);
+            foreach (var item in equipData)
+            {
+                e.Writer.Write(item);
+            }
         }
     }
 }

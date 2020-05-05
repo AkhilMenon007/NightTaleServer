@@ -50,7 +50,7 @@ namespace FYP.Server.Player
                     position = position,
                     rotation = rotation
                 },
-                equipData = equipData.ToArray()
+                equipData = equipData
             });
         }
         private void JoinLastRoomRequestCallback(object sender, MessageReceivedEventArgs e)
@@ -112,8 +112,8 @@ namespace FYP.Server.Player
                             writer.Write(new EntityCreationData() { entityID = entity.entityID, entityType = entity.entityType, serverOwned = false ,ownerID = entity.owner.client.ID});
                         }
                         entity.WriteNewEntityDataToWriter(writer);
-                        entity.unreliableOutputWriter.WriteStateDataToWriter(writer);
-                        entity.reliableOutputWriter.WriteStateDataToWriter(writer);
+                        //entity.unreliableOutputWriter.WriteStateDataToWriter(writer);
+                        //entity.reliableOutputWriter.WriteStateDataToWriter(writer);
                     }
                     using (var reply = Message.Create((ushort)ServerTags.RoomData, writer))
                     {

@@ -1,0 +1,31 @@
+[Trace]   DarkRiftServer        System Details:
+                                	OS: Microsoft Windows NT 10.0.18363.0
+                                	CLS Version: 4.0.30319.42000
+                                	DarkRift: 2.5.0.0 - Free
+[Trace]   PluginFactory         Created plugin 'CompatibilityBichannelListener'.
+[Trace]   DefaultNetworkListener Starting compatibility listener.
+[Info]    DefaultNetworkListener Server mounted, listening on port 4296.
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:40360.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:50594.
+[Info]    ClientManager         New client [0] connected [127.0.0.1:40360|127.0.0.1:50594].
+[Trace]   DefaultNetworkListener Accepted TCP connection from 127.0.0.1:40363.
+[Trace]   DefaultNetworkListener Accepted UDP connection from 127.0.0.1:50595.
+[Info]    ClientManager         New client [1] connected [127.0.0.1:40363|127.0.0.1:50595].
+[Error]   Client                An plugin encountered an error whilst handling the MessageReceived event.
+                                 System.NullReferenceException: Object reference not set to an instance of an object
+                                   at FYP.Server.Player.ItemSlot.EquipItem (FYP.Shared.Item item) [0x00001] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\SkillSystem\Scripts\ItemSlot.cs:54 
+                                   at FYP.Server.Player.PlayerSkillManager.HandleSkillMessage (System.Object sender, DarkRift.Server.MessageReceivedEventArgs e) [0x0002f] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\SkillSystem\PlayerSkillManager.cs:223 
+                                   at (wrapper delegate-invoke) System.EventHandler`1[DarkRift.Server.MessageReceivedEventArgs].invoke_void_object_TEventArgs(object,DarkRift.Server.MessageReceivedEventArgs)
+                                   at DarkRift.Server.Client+<>c__DisplayClass43_0.<HandleIncomingMessage>b__0 () [0x00011] in <62ef1c031a10437d9cba70b183da538b>:0 
+[Error]   Client                An plugin encountered an error whilst handling the MessageReceived event.
+                                 System.NullReferenceException: Object reference not set to an instance of an object
+                                   at FYP.Server.Player.ItemSlot.EquipItem (FYP.Shared.Item item) [0x00001] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\SkillSystem\Scripts\ItemSlot.cs:54 
+                                   at FYP.Server.Player.PlayerSkillManager.HandleSkillMessage (System.Object sender, DarkRift.Server.MessageReceivedEventArgs e) [0x0002f] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\SkillSystem\PlayerSkillManager.cs:223 
+                                   at (wrapper delegate-invoke) System.EventHandler`1[DarkRift.Server.MessageReceivedEventArgs].invoke_void_object_TEventArgs(object,DarkRift.Server.MessageReceivedEventArgs)
+                                   at DarkRift.Server.Client+<>c__DisplayClass43_0.<HandleIncomingMessage>b__0 () [0x00011] in <62ef1c031a10437d9cba70b183da538b>:0 
+[Error]   Client                An plugin encountered an error whilst handling the MessageReceived event.
+                                 System.NullReferenceException: Object reference not set to an instance of an object
+                                   at FYP.Server.Player.ItemSlot.EquipItem (FYP.Shared.Item item) [0x00001] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\SkillSystem\Scripts\ItemSlot.cs:54 
+                                   at FYP.Server.Player.PlayerSkillManager.HandleSkillMessage (System.Object sender, DarkRift.Server.MessageReceivedEventArgs e) [0x0002f] in F:\Unity\FYP\Repos\UnityServer\NightTaleServer\NightTaleServer\NightTaleServer\Assets\Non-Imported\Gameplay\Scripts\SkillSystem\PlayerSkillManager.cs:223 
+                                   at (wrapper delegate-invoke) System.EventHandler`1[DarkRift.Server.MessageReceivedEventArgs].invoke_void_object_TEventArgs(object,DarkRift.Server.MessageReceivedEventArgs)
+                                   at DarkRift.Server.Client+<>c__DisplayClass43_0.<HandleIncomingMessage>b__0 () [0x00011] in <62ef1c031a10437d9cba70b183da538b>:0 

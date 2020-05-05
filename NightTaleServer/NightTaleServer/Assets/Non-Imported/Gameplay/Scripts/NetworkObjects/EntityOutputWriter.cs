@@ -8,17 +8,15 @@ namespace FYP.Server
 {
     public class EntityOutputWriter : MonoBehaviour
     {
-        public ServerNetworkEntity entity { get; private set; } = null;
+        public ServerNetworkEntity entity { get; set; } = null;
         private readonly HashSet<IServerWritable> writables = new HashSet<IServerWritable>();
 
         public Action OnReset { get; set; }
-        private void Awake()
-        {
-            entity = GetComponent<ServerNetworkEntity>();
-        }
+
         public void RegisterOutputHandler(IServerWritable outputHandler)
         {
             writables.Add(outputHandler);
+            OnReset += outputHandler.ResetUpdateData;
         }
 
         public void WriteUpdateDataToWriter(DarkRiftWriter writer) 
@@ -54,6 +52,7 @@ namespace FYP.Server
 
         public void UnregisterOutputHandler(IServerWritable outputHandler)
         {
+            OnReset -= outputHandler.ResetUpdateData;
             writables.Remove(outputHandler);
         }
     }
