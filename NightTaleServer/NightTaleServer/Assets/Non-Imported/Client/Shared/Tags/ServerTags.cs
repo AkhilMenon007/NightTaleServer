@@ -38,6 +38,14 @@
         /// </summary>
         UpdateData,
         /// <summary>
+        /// Send message to client with state data of an entity which just changed LOR
+        /// </summary>
+        StateData,
+        /// <summary>
+        /// Similar to updatedata but uses TCP instead
+        /// </summary>
+        ReliableData,
+        /// <summary>
         /// Send message to client signalling a client has changed in one of their equipped items
         /// </summary>
         SkillChange,

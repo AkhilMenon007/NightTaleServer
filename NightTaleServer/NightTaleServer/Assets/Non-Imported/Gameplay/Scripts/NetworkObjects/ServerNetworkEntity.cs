@@ -8,7 +8,6 @@ using UnityEngine;
 
 namespace FYP.Server
 {
-    [RequireComponent(typeof(EntityOutputWriter))]
     public abstract class ServerNetworkEntity : MonoBehaviour
     {
         [SerializeField]
@@ -22,14 +21,23 @@ namespace FYP.Server
         public uint entityID { get; set; }
         public Room room { get; set; }
         public LocalityOfRelevance lor { get; set; }
+        [SerializeField]
+        private EntityOutputWriter _unreliableOutputWriter = null;
+        [SerializeField]
+        private EntityOutputWriter _reliableOutputWriter = null;
 
-        public EntityOutputWriter outputWriter { get; private set; }
+
+        public EntityOutputWriter unreliableOutputWriter => _unreliableOutputWriter;
+        public EntityOutputWriter reliableOutputWriter => _reliableOutputWriter;
 
         public Vector3 position { get => transform.position; set => SetObjectPosition(value); }
         public Quaternion rotation { get => transform.rotation; set => transform.rotation = value; }
 
         public Action<Room> OnLeftRoom { get; set; }
         public Action<Room> OnEnteredRoom { get; set; }
+
+        public Action<LocalityOfRelevance> OnLORChanged { get; set; }
+
 
 
         /// <summary>
@@ -45,9 +53,34 @@ namespace FYP.Server
             lorCheckMaxValue = Mathf.CeilToInt(lorCheckInterval / Time.fixedDeltaTime);
             lorCheckCounter = lorCheckMaxValue;
 
-            outputWriter = GetComponent<EntityOutputWriter>();
             OnEnteredRoom += SendRoomJoinedMessageToOthers;
             OnLeftRoom += SendRoomExitedMessageToOthers;
+            OnLORChanged += SendStateDataToOthers;
+        }
+
+        private void SendStateDataToOthers(LocalityOfRelevance target)
+        {
+            using (var writer = DarkRiftWriter.Create())
+            {
+                foreach (var adjLor in target.adjacentLoRs)
+                {
+                    foreach (var item in adjLor.objects)
+                    {
+                        item.unreliableOutputWriter.WriteUpdateDataToWriter(writer);
+                        item.reliableOutputWriter.WriteUpdateDataToWriter(writer);
+                    }
+                }
+                if (writer.Length != 0)
+                {
+                    using (var message = Message.Create((ushort)ServerTags.StateData, writer))
+                    {
+                        foreach (var player in lor.GetPlayerClients())
+                        {
+                            player.SendMessage(message, SendMode.Reliable);
+                        }
+                    }
+                }
+            }
         }
 
         private void FixedUpdate()
@@ -63,6 +96,7 @@ namespace FYP.Server
                         {
                             Debug.Log($"LOR Changed from ({lor.index[0]},{lor.index[2]}) to ({target.index[0]},{target.index[2]})");
                             lor.TransferObject(this, target);
+                            OnLORChanged?.Invoke(target);
                         }
                     }
                 }

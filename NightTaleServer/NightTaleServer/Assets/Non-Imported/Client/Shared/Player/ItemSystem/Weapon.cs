@@ -8,7 +8,7 @@ namespace FYP.Shared
     /// <summary>
     /// This is the class of all the items which can Perform actions based on user Input
     /// </summary>
-    public class Weapon : Item
+    public abstract class Weapon : Item
     {
         public WeaponData weaponData => itemData as WeaponData;
         public override EquipSlot equippableSlots { get => EquipSlot.PrimaryHand | EquipSlot.SecondaryHand; }

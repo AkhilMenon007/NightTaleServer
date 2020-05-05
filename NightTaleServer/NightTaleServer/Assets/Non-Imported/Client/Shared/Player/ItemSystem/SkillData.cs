@@ -16,6 +16,9 @@ namespace FYP.Shared
         public string skillName = "";
         public float cooldown = 0f;
         public float cost = 0f;
+
+        public const int NO_SKILL_INDEX = 0;
+
         public int GetIndex() => skillID - RESERVED_SKILL_COUNT;
 
 #if UNITY_EDITOR

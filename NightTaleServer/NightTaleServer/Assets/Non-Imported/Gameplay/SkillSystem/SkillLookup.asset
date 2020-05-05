@@ -9,7 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1d0acd4fb8472349b07bd03fa4e7ca3, type: 3}
-  m_Name: Orb
+  m_Script: {fileID: 11500000, guid: 7e40326e4c426654ca45ce8d366863bf, type: 3}
+  m_Name: SkillLookup
   m_EditorClassIdentifier: 
-  weaponData: {fileID: 11400000, guid: e74a274ca9957234e9378049760f6d26, type: 2}
+  skillList:
+  - skill: {fileID: 0}
+    skillData: {fileID: 0}
+  skillDataCount: 1

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56c55f1c078f70244888b18807e1a82b, type: 3}
   m_Name: Fireball
   m_EditorClassIdentifier: 
+  skillID: 1
   skillName: Fireball
   cooldown: 1
   cost: 5

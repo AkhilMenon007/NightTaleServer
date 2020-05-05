@@ -11,10 +11,12 @@ namespace FYP.Server.Player
 {
     public class PlayerEntity : ServerNetworkEntity
     {
-        [SerializeField]
-        private VRPlayerHandler vrHandler = null;
+        public VRPlayerHandler vrHandler = null;
+        public PlayerSkillManager skillManager = null;
         public ServerPlayer player { get; private set; }
         public VRChangeData vrData { get; private set; }
+
+        public List<EquipMessage> equipData = new List<EquipMessage>();
         private RoomManager roomManager => RoomManager.instance;
         protected override void Awake()
         {
@@ -37,6 +39,7 @@ namespace FYP.Server.Player
 
         public override void WriteNewEntityDataToWriter(DarkRiftWriter writer)
         {
+            skillManager.GetEquipData(equipData);
             writer.Write(new NewPlayerData()
             {
                 charID = player.charID,
@@ -46,7 +49,8 @@ namespace FYP.Server.Player
                 {
                     position = position,
                     rotation = rotation
-                }
+                },
+                equipData = equipData.ToArray()
             });
         }
         private void JoinLastRoomRequestCallback(object sender, MessageReceivedEventArgs e)
@@ -108,7 +112,8 @@ namespace FYP.Server.Player
                             writer.Write(new EntityCreationData() { entityID = entity.entityID, entityType = entity.entityType, serverOwned = false ,ownerID = entity.owner.client.ID});
                         }
                         entity.WriteNewEntityDataToWriter(writer);
-                        entity.outputWriter.WriteStateDataToWriter(writer);
+                        entity.unreliableOutputWriter.WriteStateDataToWriter(writer);
+                        entity.reliableOutputWriter.WriteStateDataToWriter(writer);
                     }
                     using (var reply = Message.Create((ushort)ServerTags.RoomData, writer))
                     {

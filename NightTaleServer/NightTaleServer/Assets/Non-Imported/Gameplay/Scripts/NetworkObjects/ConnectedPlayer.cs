@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using DarkRift.Server;
 using System;
+using System.Collections.Generic;
 
 public class ConnectedPlayer
 {
@@ -9,7 +10,7 @@ public class ConnectedPlayer
     [JsonIgnore]
     public string charID { get; set; }
     public PlayerPositionalData positionalData { get; set; } = null;
-
+    public PlayerEquipData equipData { get; set; } = null;
 
     public static ConnectedPlayer GetPlayerDataFromJSON(string json, string charID) 
     {
@@ -39,4 +40,17 @@ public class PlayerPositionalData
     public float posY;
     [JsonProperty]
     public float posZ;
+}
+[JsonObject]
+public class PlayerEquipData 
+{
+    public List<EquipItem> equippedItems = new List<EquipItem>();
+    public int primaryHandSkillID { get; set; }
+    public int secondaryHandSkillID { get; set; }
+}
+[JsonObject]
+public struct EquipItem 
+{
+    public int slotID { get; set; }
+    public int itemID { get; set; }
 }

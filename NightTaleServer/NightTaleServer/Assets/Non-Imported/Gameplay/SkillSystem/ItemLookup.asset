@@ -10,7 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e77bb7e94ca085a4295fc661da54cc7d, type: 3}
-  m_Name: WeaponLookup
+  m_Name: ItemLookup
   m_EditorClassIdentifier: 
-  itemList: []
-  itemDataCount: 0
+  itemList:
+  - item: {fileID: 0}
+    itemData: {fileID: 11400000, guid: 6fee9e4f5a493c7409a42d6f6e64151d, type: 2}
+  - item: {fileID: 0}
+    itemData: {fileID: 11400000, guid: e74a274ca9957234e9378049760f6d26, type: 2}
+  itemDataCount: 2

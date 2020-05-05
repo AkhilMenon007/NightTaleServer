@@ -18,23 +18,37 @@ namespace FYP.Server.RoomManagement
         {
             foreach (var lor in room.GetAllLORs())
             {
-                using (var writer = DarkRiftWriter.Create())
+                using (var relWriter = DarkRiftWriter.Create())
                 {
+                    using (var writer = DarkRiftWriter.Create())
+                    {
 
-                    foreach (var adjLor in lor.adjacentLoRs)
-                    {
-                        foreach (var item in adjLor.objects)
+                        foreach (var adjLor in lor.adjacentLoRs)
                         {
-                            item.outputWriter.WriteUpdateDataToWriter(writer);
-                        }
-                    }
-                    if (writer.Length != 0) 
-                    {
-                        using (var message = Message.Create((ushort)ServerTags.UpdateData, writer))
-                        {
-                            foreach (var player in lor.GetPlayerClients())
+                            foreach (var item in adjLor.objects)
                             {
-                                player.SendMessage(message, SendMode.Unreliable);
+                                item.unreliableOutputWriter.WriteUpdateDataToWriter(writer);
+                                item.reliableOutputWriter.WriteUpdateDataToWriter(relWriter);
+                            }
+                        }
+                        if (writer.Length != 0)
+                        {
+                            using (var message = Message.Create((ushort)ServerTags.UpdateData, writer))
+                            {
+                                foreach (var player in lor.GetPlayerClients())
+                                {
+                                    player.SendMessage(message, SendMode.Unreliable);
+                                }
+                            }
+                        }
+                        if (relWriter.Length != 0) 
+                        {
+                            using (var message = Message.Create((ushort)ServerTags.ReliableData, relWriter))
+                            {
+                                foreach (var player in lor.GetPlayerClients())
+                                {
+                                    player.SendMessage(message, SendMode.Reliable);
+                                }
                             }
                         }
                     }
@@ -42,7 +56,7 @@ namespace FYP.Server.RoomManagement
             }
             foreach (var item in room.networkEntities.Values)
             {
-                item.outputWriter.ResetUpdateData();
+                item.unreliableOutputWriter.ResetUpdateData();
             }
         }
     }

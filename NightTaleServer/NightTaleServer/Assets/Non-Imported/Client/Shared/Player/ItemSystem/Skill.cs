@@ -9,7 +9,7 @@ using UnityEditor;
 
 namespace FYP.Shared
 {
-    public class Skill : ScriptableObject
+    public abstract class Skill : ScriptableObject
     {
         public SkillData skillData = null;
 

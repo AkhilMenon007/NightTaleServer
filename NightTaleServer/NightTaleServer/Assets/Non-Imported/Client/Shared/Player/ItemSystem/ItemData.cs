@@ -13,6 +13,7 @@ namespace FYP.Shared
         [NaughtyAttributes.ReadOnly]
         public ushort id = 0;
         public const ushort RESERVED_ITEM_COUNT = 1;
+        public const ushort NO_ITEM_ID = 0;
         /// <summary>
         /// Used to get the index in the lookup.Do not use this for sending data to server.Use ID instead.
         /// </summary>

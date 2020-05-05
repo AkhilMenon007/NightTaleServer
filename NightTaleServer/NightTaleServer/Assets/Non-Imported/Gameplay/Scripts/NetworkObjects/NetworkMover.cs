@@ -31,13 +31,13 @@ namespace FYP.Server
                 {
                     if (value)
                     {
-                        networkEntity.outputWriter.OnReset += ResetUpdateData;
-                        networkEntity.outputWriter.RegisterOutputHandler(this);
+                        networkEntity.unreliableOutputWriter.OnReset += ResetUpdateData;
+                        networkEntity.unreliableOutputWriter.RegisterOutputHandler(this);
                     }
                     else
                     {
-                        networkEntity.outputWriter.UnregisterOutputHandler(this);
-                        networkEntity.outputWriter.OnReset -= ResetUpdateData;
+                        networkEntity.unreliableOutputWriter.UnregisterOutputHandler(this);
+                        networkEntity.unreliableOutputWriter.OnReset -= ResetUpdateData;
                     }
                     _isDirty = value;
                 }
@@ -85,7 +85,7 @@ namespace FYP.Server
 
         public void OnDestroy()
         {
-            networkEntity.outputWriter.UnregisterOutputHandler(this);
+            networkEntity.unreliableOutputWriter.UnregisterOutputHandler(this);
         }
     }
 }

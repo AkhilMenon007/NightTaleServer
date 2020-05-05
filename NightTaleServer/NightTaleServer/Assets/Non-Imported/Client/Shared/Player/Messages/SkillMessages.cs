@@ -111,18 +111,18 @@ namespace FYP.Shared
     /// </summary>
     public struct SkillChangeMessage : IDarkRiftSerializable
     {
-        public ushort clientID;
-        public SkillChangeRequest skillData;
+        public EquipSlot slot;
+        public SkillSetMessage skillInfo;
         public void Deserialize(DeserializeEvent e)
         {
-            clientID = e.Reader.ReadUInt16();
-            e.Reader.ReadSerializableInto(ref skillData);
+            slot = e.Reader.ReadSingleEquipSlot();
+            e.Reader.ReadSerializableInto(ref skillInfo);
         }
 
         public void Serialize(SerializeEvent e)
         {
-            e.Writer.Write(clientID);
-            e.Writer.Write(skillData);
+            e.Writer.WriteSingleEquipSlot(slot);
+            e.Writer.Write(skillInfo);
         }
     }
 

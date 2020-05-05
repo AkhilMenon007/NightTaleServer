@@ -3,6 +3,8 @@
     public enum ServerUpdateTags
     {
         PositionalData,
-        VRData
+        VRData,
+        SkillUpdate,
+        ItemChange
     }
 }
